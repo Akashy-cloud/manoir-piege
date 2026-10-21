@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "savedAt": "2026-10-21T11:31:46.918Z",
+  "phase": "WAITING",
+  "currentNight": 1,
+  "maxNights": 5,
+  "timerRemaining": 60,
+  "timerDuration": 60,
+  "timerPaused": false,
+  "destroyedRooms": [],
+  "nightExplodedRooms": [],
+  "currentNightEliminations": [],
+  "lastRevealedDeaths": [],
+  "scores": {
+    "village": 0,
+    "monsters": 0,
+    "pyromane": 0
+  },
+  "gameHistory": [],
+  "tvMapVisible": false,
+  "players": [
+    {
+      "id": "p_rpbathx",
+      "name": "Lucas",
+      "avatar": "👻",
+      "room": null,
+      "previousRoom": null,
+      "selectedRoom": null,
+      "isLocked": false,
+      "isAlive": true,
+      "hasPhone": true,
+      "eliminatedReason": null,
+      "assignmentType": null,
+      "connected": false
+    },
+    {
+      "id": "p_5i7bck4",
+      "name": "Rom",
+      "avatar": "🦉",
+      "room": null,
+      "previousRoom": null,
+      "selectedRoom": null,
+      "isLocked": false,
+      "isAlive": true,
+      "hasPhone": true,
+      "eliminatedReason": null,
+      "assignmentType": null,
+      "connected": false
+    }
+  ],
+  "spectreChatMessages": [],
+  "spectreMutedPlayers": []
+}
