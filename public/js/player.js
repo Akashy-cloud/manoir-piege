@@ -743,6 +743,20 @@ socket.on('night_deaths_revealed', (data) => {
     morningSurvivorsBanner.innerHTML = `Il reste <strong style="color: #6ee7b7;">${data.aliveCount}</strong> survivants en vie.`;
   }
 
+  if (btnCloseMorningReport) {
+    if (amIDead) {
+      btnCloseMorningReport.innerHTML = '👻 Rejoindre les Spectres';
+      btnCloseMorningReport.className = 'btn-danger';
+      btnCloseMorningReport.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+      btnCloseMorningReport.style.borderColor = '#ef4444';
+    } else {
+      btnCloseMorningReport.innerHTML = 'Continuer la partie 🌅';
+      btnCloseMorningReport.className = 'btn-primary';
+      btnCloseMorningReport.style.background = '';
+      btnCloseMorningReport.style.borderColor = '';
+    }
+  }
+
   if (modalMorningReport) {
     modalMorningReport.style.display = 'flex';
   }
@@ -830,28 +844,28 @@ function renderSpectreDashboard(state) {
   if (spectrePhaseBanner) {
     if (state.phase === 'COUNTDOWN') {
       spectrePhaseBanner.innerHTML = `
-        <div style="background: rgba(245, 158, 11, 0.2); border: 1.5px solid var(--gold); border-radius: var(--radius-sm); padding: 10px 14px; text-align: left; color: #fef08a; font-size: 0.88rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <strong style="color: var(--gold-light);">⏳ Nuit ${state.currentNight || 1} — Choix des vivants</strong>
-            <span id="spectre-countdown-timer" class="badge" style="background: rgba(245, 158, 11, 0.3); border: 1px solid var(--gold); color: #fff; font-size: 0.85rem; font-weight: 800; padding: 2px 8px;">
+        <div style="background: rgba(245, 158, 11, 0.16); border: 1px solid var(--gold); border-radius: var(--radius-sm); padding: 7px 10px; text-align: left; color: #fef08a; font-size: 0.82rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: var(--gold-light);">⏳ Nuit ${state.currentNight || 1} — Cachettes</strong>
+            <span id="spectre-countdown-timer" class="badge" style="background: rgba(245, 158, 11, 0.3); border: 1px solid var(--gold); color: #fff; font-size: 0.8rem; font-weight: 800; padding: 2px 7px;">
               ${state.timerRemaining || 60}s
             </span>
           </div>
-          <span style="font-size: 0.82rem; color: #cbd5e1;">Les vivants choisissent leur chambre. En tant que Spectre, observez et discutez dans le salon secret !</span>
+          <div style="font-size: 0.76rem; color: #cbd5e1; margin-top: 2px;">Les vivants se cachent. Complotez ou observez dans votre salon !</div>
         </div>
       `;
     } else if (state.phase === 'NIGHT_ASLEEP') {
       spectrePhaseBanner.innerHTML = `
-        <div style="background: rgba(147, 51, 234, 0.2); border: 1.5px solid #a855f7; border-radius: var(--radius-sm); padding: 10px 14px; text-align: left; color: #e9d5ff; font-size: 0.88rem;">
-          <strong style="display: block; margin-bottom: 3px;">🌙 Nuit ${state.currentNight || 1} — Silence dans le Manoir</strong>
-          <span style="font-size: 0.82rem; color: #cbd5e1;">Tout le monde dort. C'est le moment idéal pour comploter dans la messagerie des morts !</span>
+        <div style="background: rgba(147, 51, 234, 0.16); border: 1px solid #a855f7; border-radius: var(--radius-sm); padding: 7px 10px; text-align: left; color: #e9d5ff; font-size: 0.82rem;">
+          <strong style="display: block; margin-bottom: 2px;">🌙 Nuit ${state.currentNight || 1} — Silence dans le Manoir</strong>
+          <div style="font-size: 0.76rem; color: #cbd5e1;">Tout le monde dort. Complotez discrètement dans votre salon !</div>
         </div>
       `;
     } else if (state.phase === 'REVEALED') {
       spectrePhaseBanner.innerHTML = `
-        <div style="background: rgba(234, 179, 8, 0.2); border: 1.5px solid #eab308; border-radius: var(--radius-sm); padding: 10px 14px; text-align: left; color: #fef08a; font-size: 0.88rem;">
-          <strong style="display: block; margin-bottom: 3px;">☀️ Le Jour se Lève — Débats du Village</strong>
-          <span style="font-size: 0.82rem; color: #cbd5e1;">Les vivants débattent. Comploter dans votre salon secret ou envoyez des emojis anonymes sur la TV !</span>
+        <div style="background: rgba(234, 179, 8, 0.16); border: 1px solid #eab308; border-radius: var(--radius-sm); padding: 7px 10px; text-align: left; color: #fef08a; font-size: 0.82rem;">
+          <strong style="display: block; margin-bottom: 2px;">☀️ Le Jour se Lève — Débats du Village</strong>
+          <div style="font-size: 0.76rem; color: #cbd5e1;">Les vivants débattent. Complotez dans votre salon ou envoyez des emojis sur la TV !</div>
         </div>
       `;
     } else {

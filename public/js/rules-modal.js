@@ -95,9 +95,9 @@
       camp: 'village',
       campLabel: 'Village',
       image: '/Images/Cartes/Le%20fossoyeur.jpg',
-      power: "Peut recycler l'identité d'un joueur mort et l'attribuer à un joueur vivant.",
-      tip: "CONDITION STRICTE : Doit avoir passé la nuit dans la même pièce que la victime !",
-      rulesDetail: "Rôle unique au Manoir Piégé : s'il dormait dans la pièce d'une victime nocturne, il transfère l'âme et le pouvoir sur un autre habitant."
+      power: "Peut recycler l'âme d'une victime de sa pièce et la donner à un joueur la nuit suivante.",
+      tip: "Attention au choix : si donné à un Monstre par erreur, il garde le pouvoir pour 1 SEULE nuit !",
+      rulesDetail: "Rôle unique au Manoir : s'il dormait avec la victime, il transmet son pouvoir la nuit d'après. Permanent pour un villageois, 1 nuit seulement si donné à un monstre."
     },
     {
       id: 'corbeau',
@@ -352,62 +352,79 @@
               Guide chronologique officiel pour l'animateur et repère pour les joueurs :
             </div>
             
+            <!-- ÉTAPE 1 : FERMETURE DES YEUX -->
             <div class="call-order-step">
               <div class="call-order-num">1</div>
               <div>
                 <strong style="color: #fef08a; font-size: 0.95rem;">⏳ Fin des 60s & Manoir Endormi</strong><br>
-                <span style="font-size: 0.82rem; color: #94a3b8;">Tout le monde ferme les yeux. Le silence règne dans le Manoir.</span>
+                <span style="font-size: 0.82rem; color: #94a3b8;">Le décompte se termine sur l'écran. Tout le monde ferme les yeux dans sa pièce choisie. Le silence règne dans le Manoir.</span>
               </div>
             </div>
 
+            <!-- NUIT 1 UNIQUE : CUPIDON & VOLEUR -->
+            <div class="call-order-step" style="border-left: 3px solid #ec4899; background: rgba(236, 72, 153, 0.15);">
+              <div class="call-order-num" style="background: linear-gradient(135deg, #ec4899, #be185d);">✨</div>
+              <div>
+                <strong style="color: #f472b6; font-size: 0.95rem;">💘 Cupidon & 🎭 Le Voleur</strong><br>
+                <span style="font-size: 0.82rem; color: #fce7f3;">1. <strong>Le Voleur :</strong> Se réveille en premier et choisit s'il dérobe une carte endormie.<br>2. <strong>Cupidon :</strong> Désigne 2 amoureux du doigt et se rendort. L'animateur touche discrètement les 2 amoureux qui se regardent en silence.</span>
+              </div>
+            </div>
+
+            <!-- ÉTAPE 2 : LE FOSSOYEUR (DÈS LE DÉBUT DE NUIT) -->
+            <div class="call-order-step" style="border-left: 3px solid #a855f7;">
+              <div class="call-order-num" style="background: linear-gradient(135deg, #9333ea, #6b21a8);">2</div>
+              <div>
+                <strong style="color: #d8b4fe; font-size: 0.95rem;">⚰️ Le Fossoyeur (Recycleur d'Âmes)</strong><br>
+                <span style="font-size: 0.82rem; color: #cbd5e1;">S'il dormait dans la pièce d'un mort de la veille, il désigne un joueur vivant : le joueur reçoit le rôle et peut l'utiliser <strong>dès cette même nuit</strong> ! (Si donné à un monstre par erreur : 1 nuit seulement).</span>
+              </div>
+            </div>
+
+            <!-- ÉTAPE 3 : LE SALVATEUR -->
+            <div class="call-order-step" style="border-left: 3px solid #10b981;">
+              <div class="call-order-num" style="background: linear-gradient(135deg, #059669, #047857);">3</div>
+              <div>
+                <strong style="color: #6ee7b7; font-size: 0.95rem;">🛡️ Le Salvateur</strong><br>
+                <span style="font-size: 0.82rem; color: #cbd5e1;">Ouvre les yeux, désigne une personne à immuniser contre l'attaque des monstres cette nuit (jamais la même 2 nuits de suite).</span>
+              </div>
+            </div>
+
+            <!-- ÉTAPE 4 : LA VOYANTE -->
+            <div class="call-order-step" style="border-left: 3px solid #38bdf8;">
+              <div class="call-order-num" style="background: linear-gradient(135deg, #0284c7, #0369a1);">4</div>
+              <div>
+                <strong style="color: #7dd3fc; font-size: 0.95rem;">🔮 La Voyante</strong><br>
+                <span style="font-size: 0.82rem; color: #cbd5e1;">Ouvre les yeux, pointe un joueur, l'animateur lui montre discrètement sa véritable carte de rôle.</span>
+              </div>
+            </div>
+
+            <!-- ÉTAPE 5 : LES MONSTRES -->
             <div class="call-order-step" style="border-left: 3px solid #ef4444;">
-              <div class="call-order-num" style="background: linear-gradient(135deg, #dc2626, #991b1b);">2</div>
+              <div class="call-order-num" style="background: linear-gradient(135deg, #dc2626, #991b1b);">5</div>
               <div>
                 <strong style="color: #fca5a5; font-size: 0.95rem;">🐺 Les Monstres</strong><br>
                 <span style="font-size: 0.82rem; color: #cbd5e1;">Les 3 monstres ouvrent les yeux, vérifient s'ils sont au moins deux dans une pièce, et désignent leur victime en silence.</span>
               </div>
             </div>
 
-            <div class="call-order-step" style="border-left: 3px solid #a855f7;">
-              <div class="call-order-num" style="background: linear-gradient(135deg, #9333ea, #6b21a8);">3</div>
-              <div>
-                <strong style="color: #d8b4fe; font-size: 0.95rem;">⚰️ Le Fossoyeur</strong><br>
-                <span style="font-size: 0.82rem; color: #cbd5e1;">Ouvre les yeux. S'il a dormi dans la même pièce que la victime de la nuit, il peut transférer l'identité sur un autre joueur.</span>
-              </div>
-            </div>
-
-            <div class="call-order-step" style="border-left: 3px solid #f97316;">
-              <div class="call-order-num" style="background: linear-gradient(135deg, #ea580c, #c2410c);">4</div>
-              <div>
-                <strong style="color: #fdba74; font-size: 0.95rem;">💣 Le Pyromane (Tous les 2 tours)</strong><br>
-                <span style="font-size: 0.82rem; color: #cbd5e1;">Ouvre les yeux. Indique à l'animateur s'il pose une bombe dans une pièce (elle sautera à l'aube).</span>
-              </div>
-            </div>
-
-            <div class="call-order-step" style="border-left: 3px solid #38bdf8;">
-              <div class="call-order-num" style="background: linear-gradient(135deg, #0284c7, #0369a1);">5</div>
-              <div>
-                <strong style="color: #7dd3fc; font-size: 0.95rem;">🔮 La Voyante</strong><br>
-                <span style="font-size: 0.82rem; color: #cbd5e1;">Ouvre les yeux, pointe un joueur, l'animateur lui montre discrètement sa carte.</span>
-              </div>
-            </div>
-
-            <div class="call-order-step" style="border-left: 3px solid #10b981;">
-              <div class="call-order-num" style="background: linear-gradient(135deg, #059669, #047857);">6</div>
-              <div>
-                <strong style="color: #6ee7b7; font-size: 0.95rem;">🛡️ Le Salvateur</strong><br>
-                <span style="font-size: 0.82rem; color: #cbd5e1;">Ouvre les yeux, désigne une personne à immuniser contre l'attaque des monstres cette nuit.</span>
-              </div>
-            </div>
-
+            <!-- ÉTAPE 6 : LA SORCIÈRE -->
             <div class="call-order-step" style="border-left: 3px solid #eab308;">
-              <div class="call-order-num" style="background: linear-gradient(135deg, #ca8a04, #a16207);">7</div>
+              <div class="call-order-num" style="background: linear-gradient(135deg, #ca8a04, #a16207);">6</div>
               <div>
                 <strong style="color: #fde047; font-size: 0.95rem;">🧪 La Sorcière</strong><br>
                 <span style="font-size: 0.82rem; color: #cbd5e1;">L'animateur lui indique la victime des monstres. Elle choisit d'utiliser sa Potion de Vie et/ou sa Potion de Mort.</span>
               </div>
             </div>
 
+            <!-- ÉTAPE 7 : LE PYROMANE -->
+            <div class="call-order-step" style="border-left: 3px solid #f97316;">
+              <div class="call-order-num" style="background: linear-gradient(135deg, #ea580c, #c2410c);">7</div>
+              <div>
+                <strong style="color: #fdba74; font-size: 0.95rem;">💣 Le Pyromane (Tous les 2 tours)</strong><br>
+                <span style="font-size: 0.82rem; color: #cbd5e1;">Ouvre les yeux. Indique à l'animateur s'il pose une bombe dans une pièce (elle sautera à l'aube).</span>
+              </div>
+            </div>
+
+            <!-- ÉTAPE 8 : LE CORBEAU -->
             <div class="call-order-step" style="border-left: 3px solid #94a3b8;">
               <div class="call-order-num" style="background: linear-gradient(135deg, #64748b, #475569);">8</div>
               <div>
@@ -416,6 +433,7 @@
               </div>
             </div>
 
+            <!-- L'AUBE -->
             <div class="call-order-step" style="border: 2px solid var(--gold); background: rgba(212, 175, 55, 0.12);">
               <div class="call-order-num" style="background: var(--gold); color: #000;">🌅</div>
               <div>

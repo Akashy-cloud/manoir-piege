@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,13 @@
   <link rel="stylesheet" href="/css/style.css?v=8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
   <style>
     /* Spécificités Grand Écran TV - Plein écran 100vh SANS AUCUN SCROLL */
-    html, body {
+    html,
+    body {
       height: 100vh;
       max-height: 100vh;
       width: 100vw;
@@ -176,6 +180,7 @@
     .tv-side-list::-webkit-scrollbar {
       width: 4px;
     }
+
     .tv-side-list::-webkit-scrollbar-thumb {
       background: rgba(212, 175, 55, 0.35);
       border-radius: 4px;
@@ -217,6 +222,7 @@
       margin-top: 8px;
       flex-shrink: 0;
     }
+
     .tv-scores-card-title {
       font-family: var(--font-gothic);
       font-size: 0.78rem;
@@ -229,23 +235,27 @@
       align-items: center;
       gap: 5px;
     }
+
     .tv-scores-card-row {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 4px;
       text-align: center;
     }
+
     .tv-score-chip {
       background: rgba(255, 255, 255, 0.05);
       border-radius: 4px;
       padding: 3px 2px;
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
+
     .tv-score-chip-label {
       font-size: 0.65rem;
       color: var(--text-muted);
       display: block;
     }
+
     .tv-score-chip-val {
       font-size: 1rem;
       font-weight: 800;
@@ -282,6 +292,7 @@
     }
   </style>
 </head>
+
 <body class="host-body">
 
   <!-- EN-TÊTE ÉCRAN TV -->
@@ -289,30 +300,36 @@
     <div class="tv-main-title">
       <span>🏰</span>
       <span>LE MANOIR PIÉGÉ</span>
-      <span style="font-size: 0.95rem; color: var(--gold-light); font-weight: normal; font-family: var(--font-main); letter-spacing: 0; margin-left: 8px;">
+      <span
+        style="font-size: 0.95rem; color: var(--gold-light); font-weight: normal; font-family: var(--font-main); letter-spacing: 0; margin-left: 8px;">
         Grand Écran
       </span>
     </div>
 
     <!-- Badges de la manche & discret bouton plein écran -->
     <div style="display: flex; align-items: center; gap: 12px;">
-      <span id="tv-night-badge" class="badge" style="background: rgba(147, 51, 234, 0.3); border: 1.5px solid #a855f7; color: #f3e8ff; font-size: 0.95rem; padding: 5px 14px; font-weight: 700;">
+      <span id="tv-night-badge" class="badge"
+        style="background: rgba(147, 51, 234, 0.3); border: 1.5px solid #a855f7; color: #f3e8ff; font-size: 0.95rem; padding: 5px 14px; font-weight: 700;">
         🌙 Nuit 1 / 5
       </span>
 
       <div class="tv-discrete-controls" style="display: flex; align-items: center; gap: 8px;">
-        <button id="btn-open-rules" class="btn-rules-trigger btn-secondary" title="Règles officielles et détail des 13 Cartes" style="padding: 6px 14px; font-size: 0.9rem; border-color: var(--gold); color: #fef08a; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);">
+        <button id="btn-open-rules" class="btn-rules-trigger btn-secondary"
+          title="Règles officielles et détail des 13 Cartes"
+          style="padding: 6px 14px; font-size: 0.9rem; border-color: var(--gold); color: #fef08a; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);">
           📖 Règles & Cartes
         </button>
-        <button id="btn-sound-toggle" class="btn-icon" title="Son" style="padding: 6px 10px; font-size: 0.95rem;">🔊</button>
-        <button id="btn-fullscreen" class="btn-icon" title="Plein Écran" style="padding: 6px 10px; font-size: 0.95rem;">⛶</button>
+        <button id="btn-sound-toggle" class="btn-icon" title="Son"
+          style="padding: 6px 10px; font-size: 0.95rem;">🔊</button>
+        <button id="btn-fullscreen" class="btn-icon" title="Plein Écran"
+          style="padding: 6px 10px; font-size: 0.95rem;">⛶</button>
       </div>
     </div>
   </header>
 
   <!-- CONTENU PRINCIPAL TV -->
   <main class="tv-stage-layout">
-    
+
     <!-- Grand bandeau d'ambiance et décompte -->
     <div class="tv-banner-box">
       <div style="display: flex; align-items: center; gap: 16px;">
@@ -321,7 +338,8 @@
         </div>
 
         <div>
-          <h2 id="tv-phase-headline" style="font-family: var(--font-gothic); font-size: 1.3rem; color: #fff; margin-bottom: 2px; text-shadow: 0 0 15px rgba(245, 158, 11, 0.3);">
+          <h2 id="tv-phase-headline"
+            style="font-family: var(--font-gothic); font-size: 1.3rem; color: #fff; margin-bottom: 2px; text-shadow: 0 0 15px rgba(245, 158, 11, 0.3);">
             PRÉPAREZ-VOUS POUR LA NUIT...
           </h2>
           <div id="tv-phase-subtext" style="color: var(--text-muted); font-size: 0.9rem;">
@@ -350,7 +368,8 @@
           <span class="tv-panel-title">
             <span>🚪</span> Couloirs du Manoir
           </span>
-          <span id="unassigned-counter" class="badge" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255,255,255,0.2); font-size: 0.8rem; padding: 2px 8px;">
+          <span id="unassigned-counter" class="badge"
+            style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255,255,255,0.2); font-size: 0.8rem; padding: 2px 8px;">
             0 joueur
           </span>
         </div>
@@ -358,7 +377,8 @@
           En attente de choix / Sans pièce :
         </div>
         <div id="occupants-unassigned" class="tv-side-list">
-          <span style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">En attente de connexion...</span>
+          <span style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">En attente de
+            connexion...</span>
         </div>
       </aside>
 
@@ -372,15 +392,18 @@
             <div id="tv-sleep-curtain" class="tv-sleep-curtain" style="display: none;">
               <div class="tv-sleep-card">
                 <div style="font-size: 48px; animation: pulseGlow 3s infinite ease-in-out;">🌙</div>
-                <h2 style="font-family: var(--font-gothic); color: #c084fc; font-size: 2.1rem; margin: 8px 0; text-shadow: 0 0 25px rgba(192, 132, 252, 0.7);">
+                <h2
+                  style="font-family: var(--font-gothic); color: #c084fc; font-size: 2.1rem; margin: 8px 0; text-shadow: 0 0 25px rgba(192, 132, 252, 0.7);">
                   LE MANOIR S'ENDORT...
                 </h2>
-                <div style="font-size: 1.3rem; font-weight: 900; color: #fef08a; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; text-shadow: 0 0 15px rgba(245, 158, 11, 0.5);">
+                <div
+                  style="font-size: 1.3rem; font-weight: 900; color: #fef08a; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; text-shadow: 0 0 15px rgba(245, 158, 11, 0.5);">
                   😴 TOUT LE MONDE FERME LES YEUX !
                 </div>
                 <p style="color: #cbd5e1; font-size: 0.98rem; max-width: 500px; margin: 0 auto; line-height: 1.5;">
                   Les portes des chambres sont scellées.<br>
-                  <span style="color: #e9d5ff; font-weight: 600;">Seuls les rôles appelés par le Maître du Jeu ouvriront discrètement les yeux.</span>
+                  <span style="color: #e9d5ff; font-weight: 600;">Seuls les rôles appelés par le Maître du Jeu ouvriront
+                    discrètement les yeux.</span>
                 </p>
               </div>
             </div>
@@ -440,7 +463,8 @@
           <span class="tv-panel-title" style="color: #fca5a5;">
             <span>⚰️</span> Cimetière du Manoir
           </span>
-          <span id="graveyard-counter" class="badge" style="background: rgba(185, 28, 28, 0.4); border: 1px solid var(--crimson); color: #fca5a5; font-size: 0.8rem; padding: 2px 8px;">
+          <span id="graveyard-counter" class="badge"
+            style="background: rgba(185, 28, 28, 0.4); border: 1px solid var(--crimson); color: #fca5a5; font-size: 0.8rem; padding: 2px 8px;">
             0 éliminé
           </span>
         </div>
@@ -448,7 +472,8 @@
           Spectres éliminés 💀 :
         </div>
         <div id="occupants-graveyard" class="tv-side-list">
-          <span style="color: #94a3b8; font-size: 0.85rem; font-style: italic;">Aucun mort pour le moment. Tout le monde est en vie !</span>
+          <span style="color: #94a3b8; font-size: 0.85rem; font-style: italic;">Aucun mort pour le moment. Tout le monde
+            est en vie !</span>
         </div>
 
         <!-- Palmarès / Scores Globaux TV -->
@@ -503,10 +528,12 @@
       <div id="celebration-subtitle" class="celebration-subtitle">...</div>
 
       <div style="margin: 18px 0 10px 0; text-align: left;">
-        <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gold-light); font-weight: 700; margin-bottom: 8px;">
+        <div
+          style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gold-light); font-weight: 700; margin-bottom: 8px;">
           Survivants de la partie :
         </div>
-        <div id="celebration-survivors-list" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-height: 140px; overflow-y: auto;">
+        <div id="celebration-survivors-list"
+          style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-height: 140px; overflow-y: auto;">
           <!-- Injecté dynamiquement -->
         </div>
       </div>
@@ -515,10 +542,16 @@
 
   <!-- OVERLAY VERDICT DU VOTE DU VILLAGE ⚖️ -->
   <div id="vote-verdict-overlay" class="morning-deaths-overlay" style="display: none;">
-    <div class="morning-deaths-card" style="border-color: #f59e0b; box-shadow: 0 0 60px rgba(245, 158, 11, 0.4), 0 20px 50px rgba(0, 0, 0, 0.9);">
-      <div style="font-size: 3.5rem; margin-bottom: 8px; filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.6));">⚖️</div>
-      <h2 style="font-family: var(--font-gothic); font-size: 2.2rem; color: #fef08a; letter-spacing: 2px; margin-bottom: 4px;">VERDICT DU VOTE DU VILLAGE</h2>
-      <div id="vote-verdict-subtitle" style="font-size: 1.05rem; color: #cbd5e1; margin-bottom: 18px; font-weight: 600;">Les villageois ont rendu leur jugement...</div>
+    <div class="morning-deaths-card"
+      style="border-color: #f59e0b; box-shadow: 0 0 60px rgba(245, 158, 11, 0.4), 0 20px 50px rgba(0, 0, 0, 0.9);">
+      <div style="font-size: 3.5rem; margin-bottom: 8px; filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.6));">⚖️
+      </div>
+      <h2
+        style="font-family: var(--font-gothic); font-size: 2.2rem; color: #fef08a; letter-spacing: 2px; margin-bottom: 4px;">
+        VERDICT DU VOTE DU VILLAGE</h2>
+      <div id="vote-verdict-subtitle"
+        style="font-size: 1.05rem; color: #cbd5e1; margin-bottom: 18px; font-weight: 600;">Les villageois ont rendu leur
+        jugement...</div>
 
       <div id="vote-verdict-content" style="margin: 16px 0;">
         <!-- Injecté dynamiquement par tv.js -->
@@ -534,57 +567,73 @@
   <div id="tv-ghost-emojis-container" class="tv-ghost-emojis-container"></div>
 
   <!-- OVERLAY PROJECTION CINÉMATIQUE DES RÔLES & CARTES SUR TV 📖 -->
-  <div id="tv-rules-presentation-overlay" class="morning-deaths-overlay" style="display: none; z-index: 280; padding: 16px;">
-    <div class="tv-rules-presentation-card" style="background: rgba(14, 9, 24, 0.98); border: 2.5px solid var(--border-gold); border-radius: var(--radius-lg); padding: 22px 28px; max-width: 1100px; width: 96%; max-height: 94vh; box-shadow: 0 0 80px rgba(0, 0, 0, 0.95), 0 0 40px rgba(212, 175, 55, 0.35); display: flex; flex-direction: column; position: relative; overflow: hidden;">
-      
+  <div id="tv-rules-presentation-overlay" class="morning-deaths-overlay"
+    style="display: none; z-index: 280; padding: 16px;">
+    <div class="tv-rules-presentation-card"
+      style="background: rgba(14, 9, 24, 0.98); border: 2.5px solid var(--border-gold); border-radius: var(--radius-lg); padding: 22px 28px; max-width: 1100px; width: 96%; max-height: 94vh; box-shadow: 0 0 80px rgba(0, 0, 0, 0.95), 0 0 40px rgba(212, 175, 55, 0.35); display: flex; flex-direction: column; position: relative; overflow: hidden;">
+
       <!-- Top header bar on TV -->
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid rgba(212, 175, 55, 0.3); padding-bottom: 10px; margin-bottom: 14px; flex-shrink: 0;">
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid rgba(212, 175, 55, 0.3); padding-bottom: 10px; margin-bottom: 14px; flex-shrink: 0;">
         <div style="display: flex; align-items: center; gap: 12px;">
           <span style="font-size: 1.8rem;">📖</span>
           <div>
-            <h2 id="tv-presentation-header-title" style="font-family: var(--font-gothic); font-size: 1.4rem; color: var(--gold-light); margin: 0; letter-spacing: 1px;">
+            <h2 id="tv-presentation-header-title"
+              style="font-family: var(--font-gothic); font-size: 1.4rem; color: var(--gold-light); margin: 0; letter-spacing: 1px;">
               EXPLICATION DES RÔLES & CARTES DU MANOIR
             </h2>
-            <span id="tv-presentation-header-sub" style="font-size: 0.82rem; color: #cbd5e1;">Présentation officielle pour les joueurs &bull; 13 Cartes Spéciales</span>
+            <span id="tv-presentation-header-sub" style="font-size: 0.82rem; color: #cbd5e1;">Présentation officielle
+              pour les joueurs &bull; 13 Cartes Spéciales</span>
           </div>
         </div>
-        
+
         <div style="display: flex; align-items: center; gap: 12px;">
           <!-- Indicateurs d'onglets synchronisés en direct -->
-          <div style="display: flex; gap: 6px; background: rgba(0,0,0,0.4); padding: 3px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
-            <span id="tv-tab-indicator-roles" class="badge" style="font-size: 0.82rem; padding: 3px 10px; font-weight: 700; background: rgba(212, 175, 55, 0.25); border: 1px solid var(--gold); color: #fef08a;">
+          <div
+            style="display: flex; gap: 6px; background: rgba(0,0,0,0.4); padding: 3px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+            <span id="tv-tab-indicator-roles" class="badge"
+              style="font-size: 0.82rem; padding: 3px 10px; font-weight: 700; background: rgba(212, 175, 55, 0.25); border: 1px solid var(--gold); color: #fef08a;">
               🃏 Cartes
             </span>
-            <span id="tv-tab-indicator-regles" class="badge" style="font-size: 0.82rem; padding: 3px 10px; font-weight: 700; background: transparent; border: 1px solid transparent; color: #94a3b8;">
+            <span id="tv-tab-indicator-regles" class="badge"
+              style="font-size: 0.82rem; padding: 3px 10px; font-weight: 700; background: transparent; border: 1px solid transparent; color: #94a3b8;">
               📜 Règles
             </span>
-            <span id="tv-tab-indicator-appel" class="badge" style="font-size: 0.82rem; padding: 3px 10px; font-weight: 700; background: transparent; border: 1px solid transparent; color: #94a3b8;">
+            <span id="tv-tab-indicator-appel" class="badge"
+              style="font-size: 0.82rem; padding: 3px 10px; font-weight: 700; background: transparent; border: 1px solid transparent; color: #94a3b8;">
               🌙 Appel Nuit
             </span>
           </div>
 
-          <span id="tv-presentation-counter" class="badge" style="background: rgba(212, 175, 55, 0.2); border: 1.5px solid var(--gold); color: #fef08a; font-size: 0.95rem; padding: 5px 14px; font-weight: 800;">
+          <span id="tv-presentation-counter" class="badge"
+            style="background: rgba(212, 175, 55, 0.2); border: 1.5px solid var(--gold); color: #fef08a; font-size: 0.95rem; padding: 5px 14px; font-weight: 800;">
             Carte 1 / 13
           </span>
-          <button id="btn-close-tv-presentation" class="btn-icon" style="font-size: 1.4rem; padding: 4px 10px; border-radius: 6px;" title="Fermer la présentation">✕</button>
+          <button id="btn-close-tv-presentation" class="btn-icon"
+            style="font-size: 1.4rem; padding: 4px 10px; border-radius: 6px;" title="Fermer la présentation">✕</button>
         </div>
       </div>
 
       <!-- VUE 1 : DIAPORAMA DES CARTES (Par défaut) -->
-      <div id="tv-view-roles" style="display: grid; grid-template-columns: minmax(280px, 440px) 1fr; gap: 24px; align-items: center; flex: 1; overflow: hidden; min-height: 0;">
-        
+      <div id="tv-view-roles"
+        style="display: grid; grid-template-columns: minmax(280px, 440px) 1fr; gap: 24px; align-items: center; flex: 1; overflow: hidden; min-height: 0;">
+
         <!-- Large Card Image container -->
-        <div style="display: flex; justify-content: center; align-items: center; height: 100%; max-height: 68vh; overflow: hidden;">
-          <img id="tv-presentation-img" src="" alt="Carte de rôle" style="max-height: 66vh; max-width: 100%; border-radius: 14px; box-shadow: 0 0 35px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.4); border: 2px solid rgba(255, 255, 255, 0.2); object-fit: contain; transition: transform 0.3s ease;">
+        <div
+          style="display: flex; justify-content: center; align-items: center; height: 100%; max-height: 68vh; overflow: hidden;">
+          <img id="tv-presentation-img" src="" alt="Carte de rôle"
+            style="max-height: 66vh; max-width: 100%; border-radius: 14px; box-shadow: 0 0 35px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.4); border: 2px solid rgba(255, 255, 255, 0.2); object-fit: contain; transition: transform 0.3s ease;">
         </div>
 
         <!-- Role description and guidance -->
         <div style="display: flex; flex-direction: column; gap: 14px; justify-content: center;">
           <div>
-            <span id="tv-presentation-camp" class="badge" style="font-size: 0.95rem; padding: 6px 14px; font-weight: 700; margin-bottom: 8px; display: inline-block;">
+            <span id="tv-presentation-camp" class="badge"
+              style="font-size: 0.95rem; padding: 6px 14px; font-weight: 700; margin-bottom: 8px; display: inline-block;">
               🐺 Les Monstres
             </span>
-            <h1 id="tv-presentation-title" style="font-family: var(--font-gothic); font-size: 2.2rem; color: #fff; margin: 4px 0; text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);">
+            <h1 id="tv-presentation-title"
+              style="font-family: var(--font-gothic); font-size: 2.2rem; color: #fff; margin: 4px 0; text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);">
               Les Monstres
             </h1>
             <div id="tv-presentation-count" style="font-size: 1rem; color: var(--gold-light); font-weight: 600;">
@@ -592,30 +641,38 @@
             </div>
           </div>
 
-          <div style="background: rgba(0, 0, 0, 0.5); border: 1.5px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-md); padding: 16px 20px;">
-            <div style="font-size: 0.9rem; text-transform: uppercase; color: var(--gold); font-weight: 800; letter-spacing: 1px; margin-bottom: 6px;">
+          <div
+            style="background: rgba(0, 0, 0, 0.5); border: 1.5px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-md); padding: 16px 20px;">
+            <div
+              style="font-size: 0.9rem; text-transform: uppercase; color: var(--gold); font-weight: 800; letter-spacing: 1px; margin-bottom: 6px;">
               ⚡ Pouvoir & Effet :
             </div>
-            <div id="tv-presentation-power" style="font-size: 1.15rem; color: #f1f5f9; line-height: 1.5; font-weight: 500;">
+            <div id="tv-presentation-power"
+              style="font-size: 1.15rem; color: #f1f5f9; line-height: 1.5; font-weight: 500;">
               ...
             </div>
           </div>
 
-          <div style="background: rgba(212, 175, 55, 0.1); border: 1.5px solid rgba(212, 175, 55, 0.3); border-radius: var(--radius-md); padding: 14px 18px;">
-            <div style="font-size: 0.85rem; text-transform: uppercase; color: var(--gold-light); font-weight: 800; letter-spacing: 1px; margin-bottom: 4px;">
+          <div
+            style="background: rgba(212, 175, 55, 0.1); border: 1.5px solid rgba(212, 175, 55, 0.3); border-radius: var(--radius-md); padding: 14px 18px;">
+            <div
+              style="font-size: 0.85rem; text-transform: uppercase; color: var(--gold-light); font-weight: 800; letter-spacing: 1px; margin-bottom: 4px;">
               💡 Conseil Stratégique :
             </div>
-            <div id="tv-presentation-tip" style="font-size: 1rem; color: #fef08a; font-style: italic; line-height: 1.4;">
+            <div id="tv-presentation-tip"
+              style="font-size: 1rem; color: #fef08a; font-style: italic; line-height: 1.4;">
               ...
             </div>
           </div>
 
           <!-- Bottom navigation buttons on TV -->
           <div style="display: flex; gap: 12px; margin-top: 8px;">
-            <button id="btn-tv-prev-card" class="btn-secondary" style="flex: 1; padding: 10px 16px; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <button id="btn-tv-prev-card" class="btn-secondary"
+              style="flex: 1; padding: 10px 16px; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
               ◀ Précédente
             </button>
-            <button id="btn-tv-next-card" class="btn-primary" style="flex: 1; padding: 10px 16px; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <button id="btn-tv-next-card" class="btn-primary"
+              style="flex: 1; padding: 10px 16px; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
               Suivante ▶
             </button>
           </div>
@@ -624,126 +681,190 @@
       </div>
 
       <!-- VUE 2 : RÈGLES GÉNÉRALES (#tv-view-regles) -->
-      <div id="tv-view-regles" style="display: none; flex-direction: column; gap: 14px; overflow-y: auto; max-height: 74vh; padding: 6px 12px; flex: 1;">
-        <div style="background: rgba(212, 175, 55, 0.1); border: 1.5px solid rgba(212, 175, 55, 0.4); border-radius: var(--radius-md); padding: 16px 20px;">
+      <div id="tv-view-regles"
+        style="display: none; flex-direction: column; gap: 14px; overflow-y: auto; max-height: 74vh; padding: 6px 12px; flex: 1;">
+        <div
+          style="background: rgba(212, 175, 55, 0.1); border: 1.5px solid rgba(212, 175, 55, 0.4); border-radius: var(--radius-md); padding: 16px 20px;">
           <strong style="color: var(--gold-light); font-size: 1.15rem; display: flex; align-items: center; gap: 10px;">
             <span>🎯</span> Objectif de la Partie (5 Nuits Maximum) :
           </strong>
           <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 1rem; line-height: 1.5;">
-            • <strong style="color: #6ee7b7;">Les Villageois</strong> gagnent s'ils démasquent et éliminent les <strong>3 Monstres</strong> avant la fin des 5 nuits.<br>
-            • <strong style="color: #fca5a5;">Les Monstres</strong> gagnent s'ils éliminent tous les villageois ou s'il reste au moins 1 monstre en vie après la 5ème nuit !<br>
-            • <strong style="color: #fdba74;">Le Pyromane</strong> gagne en solitaire s'il est le dernier survivant dans le Manoir.
+            • <strong style="color: #6ee7b7;">Les Villageois</strong> gagnent s'ils démasquent et éliminent les
+            <strong>3 Monstres</strong> avant la fin des 5 nuits.<br>
+            • <strong style="color: #fca5a5;">Les Monstres</strong> gagnent s'ils éliminent tous les villageois ou s'il
+            reste au moins 1 monstre en vie après la 5ème nuit !<br>
+            • <strong style="color: #fdba74;">Le Pyromane</strong> gagne en solitaire s'il est le dernier survivant dans
+            le Manoir.
           </p>
         </div>
 
-        <div style="background: rgba(220, 38, 38, 0.18); border: 2px solid #ef4444; border-radius: var(--radius-md); padding: 16px 20px;">
+        <div
+          style="background: rgba(220, 38, 38, 0.18); border: 2px solid #ef4444; border-radius: var(--radius-md); padding: 16px 20px;">
           <strong style="color: #fca5a5; font-size: 1.15rem; display: flex; align-items: center; gap: 10px;">
             <span>🐺</span> Règle d'Attaque Capitale des Monstres :
           </strong>
           <p style="margin: 8px 0 0 0; color: #fecaca; font-size: 1.05rem; line-height: 1.5;">
-            Pour réussir une élimination nocturne, les monstres doivent être <strong>AU MOINS DEUX dans la même pièce</strong> que leur proie !<br>
-            S'il n'y a qu'<strong>un seul monstre isolé</strong> dans une salle avec des villageois, <strong>il est inoffensif et ne peut pas attaquer</strong>.
+            Pour réussir une élimination nocturne, les monstres doivent être <strong>AU MOINS DEUX dans la même
+              pièce</strong> que leur proie !<br>
+            S'il n'y a qu'<strong>un seul monstre isolé</strong> dans une salle avec des villageois, <strong>il est
+              inoffensif et ne peut pas attaquer</strong>.
           </p>
         </div>
 
-        <div style="background: rgba(0, 0, 0, 0.5); border: 1.5px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-md); padding: 16px 20px;">
+        <div
+          style="background: rgba(0, 0, 0, 0.5); border: 1.5px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-md); padding: 16px 20px;">
           <strong style="color: #6ee7b7; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
             <span>🏰</span> Les 5 Pièces du Manoir & Le Choix en 60 Secondes :
           </strong>
           <p style="margin: 8px 0 0 0; font-size: 0.98rem; color: #e2e8f0; line-height: 1.5;">
             Avant chaque nuit, le compte à rebours de <strong>60 secondes</strong> s'enclenche sur le grand écran.<br>
             Chaque joueur choisit secrètement sa salle sur son smartphone parmi :<br>
-            <span style="color: var(--gold-light); font-weight: 700; font-size: 1.05rem;">🕷️ Grenier &bull; 🛏️ Chambre &bull; 🔥 Salon &bull; 🍲 Cuisine &bull; 🕯️ Salle à Manger</span>.
+            <span style="color: var(--gold-light); font-weight: 700; font-size: 1.05rem;">🕷️ Grenier &bull; 🛏️ Chambre
+              &bull; 🔥 Salon &bull; 🍲 Cuisine &bull; 🕯️ Salle à Manger</span>.
           </p>
         </div>
 
-        <div style="background: rgba(147, 51, 234, 0.2); border: 1.5px solid #c084fc; border-radius: var(--radius-md); padding: 16px 20px;">
+        <div
+          style="background: rgba(147, 51, 234, 0.2); border: 1.5px solid #c084fc; border-radius: var(--radius-md); padding: 16px 20px;">
           <strong style="color: #e9d5ff; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
             <span>👻</span> Les Spectres (Les Morts continuent de jouer !) :
           </strong>
           <p style="margin: 8px 0 0 0; color: #f3e8ff; font-size: 0.98rem; line-height: 1.5;">
             Les éliminés deviennent des Spectres actifs avec des fonctionnalités exclusives :<br>
             • <strong>Le Salon des Spectres :</strong> Une messagerie secrète et privée entre tous les défunts.<br>
-            • <strong>Les Apparitions Spectrales :</strong> Projeter des emojis hantés flottants sur l'écran TV (100% Anonyme).
+            • <strong>Les Apparitions Spectrales :</strong> Projeter des emojis hantés flottants sur l'écran TV (100%
+            Anonyme).
           </p>
         </div>
       </div>
 
       <!-- VUE 3 : ORDRE D'APPEL (#tv-view-appel) -->
-      <div id="tv-view-appel" style="display: none; flex-direction: column; gap: 10px; overflow-y: auto; max-height: 74vh; padding: 6px 12px; flex: 1;">
+      <div id="tv-view-appel"
+        style="display: none; flex-direction: column; gap: 10px; overflow-y: auto; max-height: 74vh; padding: 6px 12px; flex: 1;">
+
+        <!-- BANDEAU NUIT 1 : CUPIDON & VOLEUR -->
+        <div
+          style="background: rgba(236, 72, 153, 0.15); border: 2px solid #ec4899; border-radius: var(--radius-sm); padding: 10px 14px; display: flex; align-items: center; gap: 14px;">
+          <div
+            style="background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; font-weight: 900; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.1rem;">
+            💘</div>
+          <div>
+            <strong style="color: #f472b6; font-size: 1.05rem;">Étape Préliminaire (Nuit 1 Uniquement) : Cupidon & Le
+              Voleur</strong><br>
+            <span style="font-size: 0.88rem; color: #fce7f3;">1. <strong>Le Voleur</strong> choisit s'il échange sa
+              carte. 2. <strong>Cupidon</strong> désigne les 2 Amoureux. L'animateur les touche discrètement, ils
+              ouvrent les yeux et se reconnaissent.</span>
+          </div>
+        </div>
+
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-          
-          <div class="call-order-step" style="border-left: 4px solid var(--gold); background: rgba(0,0,0,0.4); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
-            <div class="call-order-num" style="background: var(--gold); color: #000; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">1</div>
+
+          <div class="call-order-step"
+            style="border-left: 4px solid var(--gold); background: rgba(0,0,0,0.4); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
+            <div class="call-order-num"
+              style="background: var(--gold); color: #000; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              1</div>
             <div>
               <strong style="color: #fef08a; font-size: 1rem;">⏳ Fin des 60s & Sommeil</strong><br>
-              <span style="font-size: 0.85rem; color: #cbd5e1;">Tous les joueurs ferment les yeux. Le silence se fait.</span>
+              <span style="font-size: 0.85rem; color: #cbd5e1;">Tous les joueurs ferment les yeux. Le silence se
+                fait.</span>
             </div>
           </div>
 
-          <div class="call-order-step" style="border-left: 4px solid #ef4444; background: rgba(220, 38, 38, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
-            <div class="call-order-num" style="background: #dc2626; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">2</div>
-            <div>
-              <strong style="color: #fca5a5; font-size: 1rem;">🐺 Les Monstres (Trio)</strong><br>
-              <span style="font-size: 0.85rem; color: #cbd5e1;">Ouvrent les yeux, vérifient s'ils sont ≥ 2, désignent la victime.</span>
-            </div>
-          </div>
-
-          <div class="call-order-step" style="border-left: 4px solid #a855f7; background: rgba(147, 51, 234, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
-            <div class="call-order-num" style="background: #9333ea; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">3</div>
+          <div class="call-order-step"
+            style="border-left: 4px solid #a855f7; background: rgba(147, 51, 234, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
+            <div class="call-order-num"
+              style="background: #9333ea; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              2</div>
             <div>
               <strong style="color: #d8b4fe; font-size: 1rem;">⚰️ Le Fossoyeur</strong><br>
-              <span style="font-size: 0.85rem; color: #cbd5e1;">Si dans la pièce de la victime, transfère l'identité sur un vivant.</span>
+              <span style="font-size: 0.85rem; color: #cbd5e1;">Transmet l'âme d'hier à un joueur qui joue dès cette
+                nuit (1 nuit si monstre).</span>
             </div>
           </div>
 
-          <div class="call-order-step" style="border-left: 4px solid #f97316; background: rgba(234, 88, 12, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
-            <div class="call-order-num" style="background: #ea580c; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">4</div>
-            <div>
-              <strong style="color: #fdba74; font-size: 1rem;">💣 Le Pyromane (Tous les 2 tours)</strong><br>
-              <span style="font-size: 0.85rem; color: #cbd5e1;">Pose sa bombe secrète dans une pièce (explose à l'aube).</span>
-            </div>
-          </div>
-
-          <div class="call-order-step" style="border-left: 4px solid #38bdf8; background: rgba(2, 132, 199, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
-            <div class="call-order-num" style="background: #0284c7; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">5</div>
-            <div>
-              <strong style="color: #7dd3fc; font-size: 1rem;">🔮 La Voyante</strong><br>
-              <span style="font-size: 0.85rem; color: #cbd5e1;">Pointe un habitant dont l'animateur révèle la vraie carte.</span>
-            </div>
-          </div>
-
-          <div class="call-order-step" style="border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
-            <div class="call-order-num" style="background: #059669; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">6</div>
+          <div class="call-order-step"
+            style="border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
+            <div class="call-order-num"
+              style="background: #059669; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              3</div>
             <div>
               <strong style="color: #6ee7b7; font-size: 1rem;">🛡️ Le Salvateur</strong><br>
-              <span style="font-size: 0.85rem; color: #cbd5e1;">Immunise un joueur cette nuit (jamais le même 2 nuits de suite).</span>
+              <span style="font-size: 0.85rem; color: #cbd5e1;">Immunise un joueur cette nuit (jamais le même 2 nuits de
+                suite).</span>
             </div>
           </div>
 
-          <div class="call-order-step" style="border-left: 4px solid #eab308; background: rgba(202, 138, 4, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
-            <div class="call-order-num" style="background: #ca8a04; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">7</div>
+          <div class="call-order-step"
+            style="border-left: 4px solid #38bdf8; background: rgba(2, 132, 199, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
+            <div class="call-order-num"
+              style="background: #0284c7; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              4</div>
+            <div>
+              <strong style="color: #7dd3fc; font-size: 1rem;">🔮 La Voyante</strong><br>
+              <span style="font-size: 0.85rem; color: #cbd5e1;">Pointe un habitant dont l'animateur révèle la vraie
+                carte.</span>
+            </div>
+          </div>
+
+          <div class="call-order-step"
+            style="border-left: 4px solid #ef4444; background: rgba(220, 38, 38, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
+            <div class="call-order-num"
+              style="background: #dc2626; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              5</div>
+            <div>
+              <strong style="color: #fca5a5; font-size: 1rem;">🐺 Les Monstres</strong><br>
+              <span style="font-size: 0.85rem; color: #cbd5e1;">Ouvrent les yeux, vérifient s'ils sont ≥ 2, désignent la
+                victime.</span>
+            </div>
+          </div>
+
+          <div class="call-order-step"
+            style="border-left: 4px solid #eab308; background: rgba(202, 138, 4, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
+            <div class="call-order-num"
+              style="background: #ca8a04; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              6</div>
             <div>
               <strong style="color: #fde047; font-size: 1rem;">🧪 La Sorcière</strong><br>
-              <span style="font-size: 0.85rem; color: #cbd5e1;">Découvre la victime : utilise Potion de Vie et/ou Potion de Mort.</span>
+              <span style="font-size: 0.85rem; color: #cbd5e1;">Découvre la victime : utilise Potion de Vie et/ou Potion
+                de Mort.</span>
             </div>
           </div>
 
-          <div class="call-order-step" style="border-left: 4px solid #94a3b8; background: rgba(100, 116, 139, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
-            <div class="call-order-num" style="background: #475569; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">8</div>
+          <div class="call-order-step"
+            style="border-left: 4px solid #f97316; background: rgba(234, 88, 12, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
+            <div class="call-order-num"
+              style="background: #ea580c; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              7</div>
+            <div>
+              <strong style="color: #fdba74; font-size: 1rem;">💣 Le Pyromane (Tous les 2 tours)</strong><br>
+              <span style="font-size: 0.85rem; color: #cbd5e1;">Pose sa bombe secrète dans une pièce (explose à
+                l'aube).</span>
+            </div>
+          </div>
+
+          <div class="call-order-step"
+            style="border-left: 4px solid #94a3b8; background: rgba(100, 116, 139, 0.15); padding: 10px 14px; border-radius: var(--radius-sm); display: flex; gap: 12px; align-items: center;">
+            <div class="call-order-num"
+              style="background: #475569; color: #fff; font-weight: 900; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              8</div>
             <div>
               <strong style="color: #cbd5e1; font-size: 1rem;">🐦 Le Corbeau</strong><br>
-              <span style="font-size: 0.85rem; color: #cbd5e1;">Désigne le suspect qui recevra 2 voix d'office au conseil.</span>
+              <span style="font-size: 0.85rem; color: #cbd5e1;">Désigne le suspect qui recevra 2 voix d'office au
+                conseil.</span>
             </div>
           </div>
 
         </div>
 
-        <div style="margin-top: 10px; background: rgba(212, 175, 55, 0.15); border: 2px solid var(--gold); border-radius: var(--radius-sm); padding: 12px 18px; display: flex; align-items: center; gap: 14px;">
+        <div
+          style="margin-top: 10px; background: rgba(212, 175, 55, 0.15); border: 2px solid var(--gold); border-radius: var(--radius-sm); padding: 12px 18px; display: flex; align-items: center; gap: 14px;">
           <div style="font-size: 2rem;">🌅</div>
           <div>
-            <strong style="color: var(--gold-light); font-size: 1.1rem;">L'Aube : Révélation des Cachettes, Débats & Sentence du Vote !</strong><br>
-            <span style="font-size: 0.9rem; color: #f1f5f9;">Tous ouvrent les yeux : la TV affiche les cachettes, l'animateur annonce le bilan des morts et ouvre le débat !</span>
+            <strong style="color: var(--gold-light); font-size: 1.1rem;">L'Aube : Révélation des Cachettes, Débats &
+              Sentence du Vote !</strong><br>
+            <span style="font-size: 0.9rem; color: #f1f5f9;">Tous ouvrent les yeux : la TV affiche les cachettes,
+              l'animateur annonce le bilan des morts et ouvre le débat !</span>
           </div>
         </div>
 
@@ -757,4 +878,5 @@
   <script src="/js/rules-modal.js?v=11"></script>
   <script src="/js/tv.js?v=11"></script>
 </body>
+
 </html>
