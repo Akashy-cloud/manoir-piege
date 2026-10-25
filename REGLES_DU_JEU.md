@@ -42,8 +42,10 @@ L'espace est divisé en 5 pièces principales (*Le Salon, La Cuisine, La Salle �
 * **🧪 La Sorcière :** Possède 1 potion de vie (ressuscite un mort) et 1 potion de mort (élimine un joueur).
 * **🏹 Le Chasseur :** S'il est éliminé, il a un dernier tir pour emmener un autre joueur avec lui dans la tombe.
 * **⚰️ Le Fossoyeur *(Rôle custom)* :**
-  * Peut recycler l'identité d'un joueur mort et l'attribuer à un joueur vivant...
-  * **Condition stricte :** Doit avoir passé la nuit dans la même pièce que la victime !
+  * Peut recycler l'identité d'un joueur mort et la transmettre à un joueur vivant lors de la nuit suivante.
+  * **Condition stricte :** Doit obligatoirement avoir passé la nuit dans la même pièce que la victime !
+  * **Si donné à un Villageois :** Le villageois hérite du rôle et du pouvoir définitivement.
+  * **Si donné à un Monstre par erreur :** Le monstre reste Monstre et hérite du pouvoir pour **UNE SEULE NUIT** seulement (le pouvoir s'estompe à l'aube) !
 * **💣 Le Pyromane *(Rôle custom)* :**
   * Peut placer de l'essence et faire exploser une pièce **tous les 2 tours de nuit**.
   * Élimine instantanément quiconque se trouve dans la pièce (monstres comme innocents).
@@ -68,11 +70,18 @@ L'espace est divisé en 5 pièces principales (*Le Salon, La Cuisine, La Salle �
 1. L'animateur lance le décompte de 60s sur l'écran du Manoir.
 2. Chacun choisit sa pièce sur son smartphone (ou oralement pour les joueurs sans téléphone).
 3. À la fin des 60s, si un joueur n'a pas validé, il reste dans sa pièce de la nuit passée (ou se voit attribuer une pièce aléatoire intacte lors de la 1ère nuit). Personne n'est éliminé par oubli !
-4. Les yeux se ferment, l'animateur appelle les rôles dans l'ordre :
-   * **Les Monstres :** Vérifient s'ils sont au moins deux dans une pièce pour éliminer leur victime.
-   * **Le Fossoyeur :** Vérifie s'il était dans la pièce d'une victime pour activer son transfert.
-   * **Le Pyromane :** Choisit s'il fait exploser une pièce (tous les 2 tours).
-   * **La Voyante, la Petite Fille, le Salvateur, la Sorcière, le Corbeau** effectuent leurs actions respectives.
+4. Les yeux se ferment, l'animateur appelle les rôles dans l'ordre chronologique :
+   * **💘 Tour Spécial Nuit 1 :**
+     * **Le Voleur :** Choisit s'il échange sa carte avec celle d'un joueur endormi.
+     * **Cupidon :** Désigne discrètement deux amoureux. L'animateur les touche dans le dos pour qu'ils ouvrent les yeux et se reconnaissent.
+   * **🌙 Chaque Nuit :**
+     * **1. Le Fossoyeur :** S'il a dormi dans la même pièce qu'une victime d'hier, transmet son rôle à un joueur qui peut l'utiliser dès cette même nuit !
+     * **2. Le Salvateur :** Protège un joueur de son choix (ne peut pas protéger la même personne 2 nuits de suite).
+     * **3. La Voyante :** Découvre secrètement l'identité d'un habitant.
+     * **4. Les Monstres :** Doivent être au moins deux dans une pièce pour éliminer leur victime.
+     * **5. La Sorcière :** Découvre la victime des monstres et choisit d'utiliser sa Potion de Vie et/ou de Mort.
+     * **6. Le Pyromane (tous les 2 tours) :** Piège une salle avec un baril d'essence.
+     * **7. Le Corbeau :** Attribue anonymement 2 voix de pénalité à un suspect pour le conseil de jour.
 
 ### 2️⃣ La Phase de Jour (Révélation & Enquête)
 1. L'écran du Manoir révèle **qui a dormi où**.

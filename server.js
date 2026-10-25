@@ -1312,8 +1312,21 @@ app.get('/admin', (req, res) => {
 let customJoinUrl = process.env.PUBLIC_URL || null;
 
 app.get('/api/network-info', async (req, res) => {
+  const hostHeader = req.get('host') || '';
+  const proto = req.get('x-forwarded-proto') || (req.secure ? 'https' : 'http');
+  const isCloudHost = hostHeader && !hostHeader.startsWith('localhost') && !hostHeader.startsWith('127.0.0.1') && !hostHeader.startsWith('192.168.') && !hostHeader.startsWith('10.');
+
+  let joinUrl = customJoinUrl;
+  if (!joinUrl) {
+    if (isCloudHost) {
+      joinUrl = `${proto}://${hostHeader}`;
+    } else {
+      const localIp = getLocalIpAddress();
+      joinUrl = `http://${localIp}:${PORT}`;
+    }
+  }
+
   const localIp = getLocalIpAddress();
-  const joinUrl = customJoinUrl || `http://${localIp}:${PORT}`;
   try {
     const qrCodeDataUrl = await QRCode.toDataURL(joinUrl, {
       margin: 1,
@@ -1323,7 +1336,7 @@ app.get('/api/network-info', async (req, res) => {
         light: '#f7f4ea'
       }
     });
-    res.json({ localIp, port: PORT, joinUrl, qrCodeDataUrl, isCustomUrl: !!customJoinUrl });
+    res.json({ localIp, port: PORT, joinUrl, qrCodeDataUrl, isCustomUrl: !!customJoinUrl || isCloudHost });
   } catch (err) {
     res.status(500).json({ error: 'QR Code error' });
   }
