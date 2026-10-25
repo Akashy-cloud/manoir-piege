@@ -3407,32 +3407,48 @@ body {
 /* ======================================================== */
 .spectre-nav-tabs {
   display: flex;
-  gap: 8px;
-  background: rgba(14, 8, 24, 0.75);
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  gap: 4px;
+  background: rgba(14, 8, 24, 0.85);
+  border: 1.5px solid rgba(168, 85, 247, 0.4);
   border-radius: var(--radius-md);
-  padding: 5px;
-  margin-bottom: 14px;
+  padding: 4px;
+  margin-bottom: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .spectre-tab-btn {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
   color: #cbd5e1;
   font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 10px 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   touch-action: manipulation;
   user-select: none;
+  white-space: nowrap;
+}
+
+.spectre-tab-btn .tab-emoji {
+  font-size: 1.05rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.spectre-tab-btn .tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .spectre-tab-btn:hover {
@@ -3446,6 +3462,49 @@ body {
   border: 1px solid #c084fc;
   box-shadow: 0 0 15px rgba(168, 85, 247, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   font-weight: 700;
+}
+
+@media (max-width: 380px) {
+  .spectre-tab-btn {
+    font-size: 0.74rem;
+    padding: 7px 2px;
+    gap: 2px;
+  }
+  .spectre-tab-btn .tab-emoji {
+    font-size: 0.95rem;
+  }
+}
+
+/* Formulaire de chat des Spectres (anti-débordement mobile) */
+#form-spectre-chat {
+  display: flex !important;
+  gap: 6px !important;
+  margin-top: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#input-spectre-chat {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#btn-send-spectre-chat {
+  flex-shrink: 0 !important;
+  box-sizing: border-box !important;
+  padding: 8px 10px !important;
+  font-size: 0.82rem !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 380px) {
+  #btn-send-spectre-chat {
+    padding: 8px 7px !important;
+    font-size: 0.76rem !important;
+    letter-spacing: 0 !important;
+  }
 }
 
 .spectre-rules-subtab-btn {
