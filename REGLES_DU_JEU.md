@@ -9,8 +9,8 @@ Document de référence pour l'animateur et le déroulement des parties.
 * **Participants :** A partir de 10 joueurs (10-14 ans).
 * **Durée :** Environ 1 heure.
 * **Format :** Jeu de rôle vivant, mobile et stratégique (mélange de Loup-Garou, de gestion de pièces et de bluff).
-* **Objectif des Villageois :** Démasquer et éliminer les monstres avant la fin du temps imparti (compte à rebours de **5 nuits maximum**).
-* **Objectif des Monstres :** Éliminer tous les villageois ou survivre jusqu'à la fin de la 5ème nuit.
+* **Objectif des Villageois :** Démasquer et éliminer les monstres avant la fin du compte à rebours (**ajustable de 3 à 7 nuits**, 5 nuits par défaut).
+* **Objectif des Monstres :** Éliminer tous les villageois ou survivre jusqu'à l'aube de la dernière nuit.
 
 ---
 
@@ -28,11 +28,11 @@ L'espace est divisé en 5 pièces principales (*Le Salon, La Cuisine, La Salle �
 
 ---
 
-## 3. 🎭 La Répartition des 15 Rôles (Cartes Physiques)
+## 3. 🎭 La Répartition des Rôles (Cartes Physiques)
 
-### 🐺 Les Monstres (3 joueurs)
-* **3 Monstres (Vampires / Loups-Garous) :**
-  * Se réveillent la nuit.
+### 🐺 Les Monstres (Ajustable : 2 à 5 monstres selon l'effectif)
+* **Les Monstres (Vampires / Loups-Garous) :**
+  * Se réveillent la nuit ensemble.
   * Doivent se coordonner à deux minimum dans une même pièce pour pouvoir frapper leur victime.
 
 ---
@@ -42,10 +42,13 @@ L'espace est divisé en 5 pièces principales (*Le Salon, La Cuisine, La Salle �
 * **🧪 La Sorcière :** Possède 1 potion de vie (ressuscite un mort) et 1 potion de mort (élimine un joueur).
 * **🏹 Le Chasseur :** S'il est éliminé, il a un dernier tir pour emmener un autre joueur avec lui dans la tombe.
 * **⚰️ Le Fossoyeur *(Rôle custom)* :**
-  * Peut recycler l'identité d'un joueur mort et la transmettre à un joueur vivant lors de la nuit suivante.
-  * **Condition stricte :** Doit obligatoirement avoir passé la nuit dans la même pièce que la victime !
-  * **Si donné à un Villageois :** Le villageois hérite du rôle et du pouvoir définitivement.
-  * **Si donné à un Monstre par erreur :** Le monstre reste Monstre et hérite du pouvoir pour **UNE SEULE NUIT** seulement (le pouvoir s'estompe à l'aube) !
+  * **Canalisation d'une âme :** Chaque nuit, il fouille le cimetière et **utilise lui-même le pouvoir d'un joueur villageois mort** de son choix (sonder comme la Voyante, protéger comme le Salvateur, maudire comme le Corbeau...).
+  * **Liberté totale :** Aucune restriction de pièce ! Il a accès à tous les défunts, où qu'ils aient péri.
+  * **Règle de l'Âme Épuisée :** Il ne peut **pas canaliser la même âme 2 nuits de suite** (l'âme doit reposer), ce qui le force à varier ses pouvoirs !
+  * **Garde-fous des rôles :**
+    * *Sorcière :* n'hérite que des potions encore intactes non utilisées de son vivant.
+    * *Chasseur :* ayant déjà tiré son baroud d'honneur à sa mort, son pouvoir ne peut pas être réactivé.
+    * *Monstres & Neutres :* le Fossoyeur étant du camp du Village, les âmes maudites ne peuvent pas être canalisées.
 * **💣 Le Pyromane *(Rôle custom)* :**
   * Peut placer de l'essence et faire exploser une pièce **tous les 2 tours de nuit**.
   * Élimine instantanément quiconque se trouve dans la pièce (monstres comme innocents).
@@ -75,7 +78,7 @@ L'espace est divisé en 5 pièces principales (*Le Salon, La Cuisine, La Salle �
      * **Le Voleur :** Choisit s'il échange sa carte avec celle d'un joueur endormi.
      * **Cupidon :** Désigne discrètement deux amoureux. L'animateur les touche dans le dos pour qu'ils ouvrent les yeux et se reconnaissent.
    * **🌙 Chaque Nuit :**
-     * **1. Le Fossoyeur :** S'il a dormi dans la même pièce qu'une victime d'hier, transmet son rôle à un joueur qui peut l'utiliser dès cette même nuit !
+     * **1. Le Fossoyeur :** Choisit une âme villageoise au cimetière (jamais la même 2 nuits de suite) et utilise immédiatement son pouvoir (voyance, protection, corbeau...).
      * **2. Le Salvateur :** Protège un joueur de son choix (ne peut pas protéger la même personne 2 nuits de suite).
      * **3. La Voyante :** Découvre secrètement l'identité d'un habitant.
      * **4. Les Monstres :** Doivent être au moins deux dans une pièce pour éliminer leur victime.
