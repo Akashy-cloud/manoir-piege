@@ -1031,103 +1031,265 @@ body {
   user-select: none;
 }
 
-/* 5 Room Overlay Zones - Compact, Non-intrusive & Beautiful */
+/* 5 Room Overlay Zones - Adaptatives, SANS AUCUN SCROLL & Esthétiques */
 .room-overlay-zone {
   position: absolute;
-  border: 1px dashed rgba(212, 175, 55, 0.45);
-  border-radius: 6px;
-  background: rgba(13, 8, 22, 0.22);
-  padding: 4px 6px;
+  border: 1.5px dashed rgba(212, 175, 55, 0.45);
+  border-radius: 8px;
+  background: rgba(13, 8, 22, 0.45);
+  backdrop-filter: blur(3px);
+  padding: 3px 5px;
   display: flex;
   flex-direction: column;
-  transition: all 0.2s ease;
-  overflow-y: auto;
-  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden !important; /* AUCUN SCROLL SUR LA CARTE */
+  scrollbar-width: none;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
+  box-sizing: border-box;
+  z-index: 5;
+}
+
+.room-overlay-zone::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.room-overlay-zone.occupied {
+  background: rgba(18, 12, 28, 0.72);
+  border-style: solid;
+  border-color: rgba(245, 158, 11, 0.65);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.8), inset 0 0 12px rgba(245, 158, 11, 0.15);
 }
 
 .room-overlay-zone:hover {
-  background: rgba(18, 12, 28, 0.45);
+  background: rgba(22, 14, 34, 0.88);
   border-color: var(--gold-light);
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.4), inset 0 0 12px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.5), inset 0 0 15px rgba(0, 0, 0, 0.7);
+  z-index: 25;
 }
 
-/* Compact Room Coordinates situated comfortably inside each room */
+/* Dimensions architecturales optimisées calquées sur le plan réel du manoir */
 .room-chambre {
-  left: 17%;
-  top: 9%;
-  width: 20%;
-  height: 24%;
+  left: 13%;
+  top: 7%;
+  width: 27%;
+  height: 29%;
 }
 
 .room-cuisine {
-  left: 62%;
-  top: 9%;
-  width: 20%;
-  height: 24%;
+  left: 58%;
+  top: 7%;
+  width: 28%;
+  height: 29%;
 }
 
 .room-salle_a_manger {
-  left: 13%;
-  top: 41%;
-  width: 19%;
-  height: 34%;
+  left: 10%;
+  top: 38%;
+  width: 24%;
+  height: 38%;
 }
 
 .room-salon {
-  left: 38%;
-  top: 54%;
-  width: 20%;
-  height: 22%;
+  left: 36%;
+  top: 50%;
+  width: 27%;
+  height: 25.5%;
 }
 
 .room-grenier {
-  left: 63%;
-  top: 41%;
-  width: 19%;
-  height: 34%;
+  left: 64%;
+  top: 38%;
+  width: 23%;
+  height: 38%;
 }
 
 .room-overlay-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
-  padding: 2px 6px;
-  background: rgba(15, 10, 25, 0.85);
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  border-radius: 4px;
+  margin-bottom: 3px;
+  padding: 1px 6px;
+  background: rgba(15, 10, 25, 0.92);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  border-radius: 5px;
   pointer-events: none;
+  flex-shrink: 0;
+  height: 21px;
+  box-sizing: border-box;
 }
 
 .room-overlay-title {
   font-family: var(--font-gothic);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--gold-light);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
+  line-height: 1;
 }
 
 .room-overlay-badge {
   font-family: var(--font-gothic);
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   font-weight: 800;
   color: #fff;
-  background: rgba(217, 119, 6, 0.75);
+  background: rgba(217, 119, 6, 0.85);
   border: 1px solid var(--border-gold);
-  padding: 1px 6px;
-  border-radius: 10px;
+  padding: 0 6px;
+  border-radius: 8px;
+  line-height: 1.4;
 }
 
+/* ======================================================== */
+/* 👥 OCCUPANTS : GRILLE ADAPTATIVE MULTI-COLONNES ANTI-SCROLL */
+/* ======================================================== */
 .map-occupants {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 3px;
   align-content: flex-start;
   flex: 1;
-  overflow-y: auto;
-  padding-top: 2px;
+  min-height: 0;
+  overflow: hidden !important; /* ZÉRO SCROLL GARANTI */
+  scrollbar-width: none;
+  padding-top: 1px;
+  box-sizing: border-box;
+}
+
+.map-occupants::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Structure interne d'un pion joueur dans une pièce */
+.map-occupants .player-chip {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  box-sizing: border-box !important;
+  border-width: 1px !important;
+  white-space: nowrap !important;
+  transition: all 0.15s ease !important;
+}
+
+.map-occupants .chip-avatar {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  margin-right: 3px;
+}
+
+.map-occupants .chip-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.map-occupants .chip-status-badge,
+.map-occupants .chip-phone-badge,
+.map-occupants .chip-monster-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  margin-left: 2px;
+}
+
+#monster-toggle-card:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+/* --- DENSITÉ 1 : 1 à 2 Joueurs (Confortable) --- */
+.map-occupants[data-density="normal"] {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.map-occupants[data-density="normal"] .player-chip {
+  height: 25px;
+  padding: 2px 7px;
+  font-size: 0.84rem;
+  border-radius: 12px;
+  width: 100%;
+}
+.map-occupants[data-density="normal"] .chip-avatar {
+  font-size: 1.05rem;
+}
+.map-occupants[data-density="normal"] .chip-name {
+  font-size: 0.84rem;
+}
+
+/* --- DENSITÉ 2 : 3 à 4 Joueurs (Grille 2 Colonnes) --- */
+.map-occupants[data-density="compact"] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px 4px;
+}
+.map-occupants[data-density="compact"] .player-chip {
+  height: 22px;
+  padding: 1px 5px;
+  font-size: 0.74rem;
+  border-radius: 8px;
+  width: 100%;
+}
+.map-occupants[data-density="compact"] .chip-avatar {
+  font-size: 0.92rem;
+}
+.map-occupants[data-density="compact"] .chip-name {
+  font-size: 0.74rem;
+}
+
+/* --- DENSITÉ 3 : 5 à 6 Joueurs (Grille 2 Colonnes Ultra-Optimisée) --- */
+.map-occupants[data-density="crowded"] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 3px;
+}
+.map-occupants[data-density="crowded"] .player-chip {
+  height: 20px;
+  padding: 1px 4px;
+  font-size: 0.68rem;
+  border-radius: 6px;
+  width: 100%;
+}
+.map-occupants[data-density="crowded"] .chip-avatar {
+  font-size: 0.82rem;
+}
+.map-occupants[data-density="crowded"] .chip-name {
+  font-size: 0.68rem;
+}
+
+/* --- DENSITÉ 4 : 7 Joueurs et plus (Micro-Pions Haute Capacité) --- */
+.map-occupants[data-density="packed"] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 2px;
+}
+.map-occupants[data-density="packed"] .player-chip {
+  height: 18px;
+  padding: 0 3px;
+  font-size: 0.62rem;
+  border-radius: 5px;
+  width: 100%;
+}
+.map-occupants[data-density="packed"] .chip-avatar {
+  font-size: 0.76rem;
+}
+.map-occupants[data-density="packed"] .chip-name {
+  font-size: 0.62rem;
 }
 
 .empty-room-hint {
