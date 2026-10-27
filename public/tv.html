@@ -686,13 +686,13 @@
         <div
           style="background: rgba(212, 175, 55, 0.1); border: 1.5px solid rgba(212, 175, 55, 0.4); border-radius: var(--radius-md); padding: 16px 20px;">
           <strong style="color: var(--gold-light); font-size: 1.15rem; display: flex; align-items: center; gap: 10px;">
-            <span>🎯</span> Objectif de la Partie (5 Nuits Maximum) :
+            <span>🎯</span> Objectif de la Partie (<span id="tv-rule-max-nights">5 Nuits</span> Maximum) :
           </strong>
           <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 1rem; line-height: 1.5;">
             • <strong style="color: #6ee7b7;">Les Villageois</strong> gagnent s'ils démasquent et éliminent les
-            <strong>3 Monstres</strong> avant la fin des 5 nuits.<br>
+            <strong id="tv-rule-monsters-count">3 Monstres</strong> avant la fin des <span id="tv-rule-max-nights-2">5 nuits</span>.<br>
             • <strong style="color: #fca5a5;">Les Monstres</strong> gagnent s'ils éliminent tous les villageois ou s'il
-            reste au moins 1 monstre en vie après la 5ème nuit !<br>
+            reste au moins 1 monstre en vie après la <span id="tv-rule-final-night-label">5ème nuit</span> !<br>
             • <strong style="color: #fdba74;">Le Pyromane</strong> gagne en solitaire s'il est le dernier survivant dans
             le Manoir.
           </p>
@@ -778,8 +778,7 @@
               2</div>
             <div>
               <strong style="color: #d8b4fe; font-size: 1rem;">⚰️ Le Fossoyeur</strong><br>
-              <span style="font-size: 0.85rem; color: #cbd5e1;">Transmet l'âme d'hier à un joueur qui joue dès cette
-                nuit (1 nuit si monstre).</span>
+              <span style="font-size: 0.85rem; color: #cbd5e1;">Choisit une âme villageoise au cimetière (jamais la même 2 nuits de suite) et utilise son pouvoir.</span>
             </div>
           </div>
 
