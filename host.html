@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Manoir Piégé — Schéma en Direct & Décompte 60s</title>
+  <link rel="stylesheet" href="/css/style.css?v=8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏰</text></svg>">
+</head>
+<body class="host-body">
+  
+  <!-- Header -->
+  <header class="game-header">
+    <div class="logo-container">
+      <span class="logo-icon">🏰</span>
+      <div>
+        <h1 class="game-title">Le Manoir Piégé</h1>
+        <div style="font-size: 0.8rem; color: var(--gold-light);">Schéma des Salles & Décompte d'une Minute</div>
+      </div>
+    </div>
+
+    <!-- Statut Compact pour Smartphone & Tablette -->
+    <div class="mobile-header-status" id="mobile-header-status">
+      <span class="mobile-badge-night" id="mobile-hdr-night">🌙 Nuit 1</span>
+      <span class="mobile-badge-timer" id="mobile-hdr-timer">⏳ 60s</span>
+      <div class="mobile-badge-counts">
+        <span style="color:#6ee7b7;"><span id="mobile-hdr-alive">0</span>🟢</span>
+        <span style="color:#f87171;"><span id="mobile-hdr-dead">0</span>💀</span>
+      </div>
+    </div>
+
+    <!-- Actions Rapides Animateur (Desktop) -->
+    <div class="header-status" style="flex-wrap: wrap; gap: 8px;">
+      <button id="btn-main-action" class="btn-primary" style="padding: 10px 20px; font-size: 1.05rem;">
+        ⏳ Lancer le décompte (1 minute)
+      </button>
+
+      <button id="btn-restart-night" class="btn-secondary" style="border-color: var(--gold); color: #fef08a; font-weight: 600;" title="Relancer la nuit en cours (remet le chrono à 60s et déverrouille les choix pour les survivants)">
+        🔄 Relancer la nuit
+      </button>
+
+      <button id="btn-open-manual-modal" class="btn-secondary" title="Ajouter un joueur qui n'a pas de téléphone">
+        + Sans Téléphone
+      </button>
+
+      <button id="btn-open-roster-modal" class="btn-secondary" style="border-color: #38bdf8; color: #7dd3fc; font-weight: 600;" title="Gérer la liste de tous les participants (renommer, retirer, voir le statut)">
+        👥 Participants (<span id="roster-count-header">0</span>)
+      </button>
+
+      <a href="/tv.html" target="_blank" class="btn-secondary" style="border-color: #a855f7; color: #d8b4fe; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Ouvrir l'écran TV / Vidéoprojecteur dans un nouvel onglet">
+        📺 Écran TV
+      </a>
+
+      <button id="btn-toggle-qr" class="btn-secondary" title="Afficher le QR Code">
+        📱 QR Code
+      </button>
+
+      <button id="btn-open-pyro-modal" class="btn-secondary" style="border-color: #ef4444; color: #fca5a5; font-weight: 700;" title="Pouvoir du Pyromane : Faire sauter une pièce">
+        💣 Pyromane
+      </button>
+
+      <button id="btn-host-rules" class="btn-rules-trigger btn-secondary" style="border-color: var(--gold); color: #fef08a; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 0 12px rgba(212, 175, 55, 0.2);" title="Consulter les Règles officielles et le détail des 13 Cartes">
+        📖 Règles & Cartes
+      </button>
+
+      <button id="btn-open-host-spectre-chat" class="btn-secondary" style="border-color: #a855f7; color: #e9d5ff; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 0 12px rgba(168, 85, 247, 0.25);" title="Ouvrir et modérer le Salon des Spectres (Messagerie secrète des morts)">
+        💬 Chat des Morts <span id="host-spectre-badge" class="badge" style="display: none; background: #ef4444; color: #fff; font-size: 0.72rem; padding: 2px 7px; border-radius: 10px;">0</span>
+      </button>
+
+      <button id="btn-open-night-deaths-modal" class="btn-secondary" style="border-color: #dc2626; color: #fca5a5; font-weight: 700;" title="Bilan des Morts de la Nuit : Éliminer les victimes et révéler sur les téléphones">
+        ⚰️ Morts de la Nuit
+      </button>
+
+      <button id="btn-open-vote-modal" class="btn-secondary" style="border-color: #f59e0b; color: #fef08a; font-weight: 700;" title="Vote du Village : Éliminer le joueur désigné par le vote de la table">
+        ⚖️ Vote du Village
+      </button>
+
+      <button id="btn-reset-entire-game" class="btn-secondary" style="border-color: #dc2626; color: #fca5a5; font-weight: 600;" title="Relancer complètement toute la partie (ressuscite tout le monde, retour Nuit 1, chrono à 60s)">
+        🏰 Relancer la partie
+      </button>
+
+      <button id="btn-toggle-map-size" class="btn-icon" title="Agrandir / Ajuster la taille de la carte">↔️</button>
+      <button id="btn-sound-toggle" class="btn-icon" title="Son">🔊</button>
+      <button id="btn-fullscreen" class="btn-icon" title="Plein Écran">⛶</button>
+    </div>
+  </header>
+
+  <!-- Barre de Navigation Mobile par Onglets (Accessible sur Smartphone <= 900px) -->
+  <nav class="mobile-tabs-bar" id="mobile-tabs-bar">
+    <button type="button" class="mobile-tab-btn active" data-tab="map">
+      <span class="tab-icon">🏰</span>
+      <span class="tab-text">Plan & Salles</span>
+    </button>
+    <button type="button" class="mobile-tab-btn" data-tab="players">
+      <span class="tab-icon">👥</span>
+      <span class="tab-text">Joueurs (<span id="mobile-tab-roster-count">0</span>)</span>
+    </button>
+    <button type="button" class="mobile-tab-btn" data-tab="winners">
+      <span class="tab-icon">🏆</span>
+      <span class="tab-text">Palmarès</span>
+    </button>
+    <button type="button" class="mobile-tab-btn" data-tab="tools">
+      <span class="tab-icon">⚙️</span>
+      <span class="tab-text">Régie</span>
+    </button>
+  </nav>
+
+  <main class="main-content" style="max-width: 100%; width: 100%; padding: 10px 16px;">
+    
+    <div class="host-center-column" id="host-center-column">
+
+      <!-- Grand Bandeau de Statut et Décompte 60s -->
+      <div id="host-banner-box" style="display: flex; justify-content: space-between; align-items: center; background: rgba(22, 17, 34, 0.95); border: 2px solid var(--border-gold); border-radius: var(--radius-md); padding: 14px 24px; flex-wrap: wrap; gap: 14px;">
+        
+        <div style="display: flex; align-items: center; gap: 18px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <div id="host-timer-display" class="timer-box" style="font-size: 2rem; padding: 8px 24px; margin: 0; min-width: 140px; text-align: center;">
+              ⏳ <span id="host-timer-seconds">60</span>s
+            </div>
+            <button id="btn-pause-timer" class="btn-icon" style="font-size: 1.1rem; padding: 10px; display: none;" title="Mettre en pause ou reprendre le décompte (Espace)">⏸️</button>
+            <button id="btn-quick-restart-timer" class="btn-icon" style="font-size: 1.1rem; padding: 10px;" title="Remettre le chrono à 60s et relancer la nuit">🔄</button>
+          </div>
+
+          <div>
+            <h2 id="host-phase-headline" style="font-family: var(--font-gothic); font-size: 1.5rem; color: var(--gold-light); margin-bottom: 2px;">
+              Préparez-vous pour la nuit...
+            </h2>
+            <div id="host-phase-subtext" style="color: var(--text-muted); font-size: 0.95rem;">
+              1 minute pour choisir son refuge. À 0s, le manoir assigne votre cachette précédente ou un refuge intact !
+            </div>
+          </div>
+        </div>
+
+        <!-- Compteurs vivants / éliminés & Action Révéler les morts -->
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <!-- Badge validation en temps réel -->
+          <span id="badge-ready-count" class="badge" style="display: none; background: rgba(16, 185, 129, 0.2); border: 1.5px solid var(--emerald); color: #6ee7b7; font-size: 0.95rem; padding: 8px 14px;">
+            🔒 <span id="ready-count-number">0</span>/<span id="ready-count-total">0</span> Prêts
+          </span>
+          <!-- Bouton explications des règles et détail des cartes avant de lancer la partie -->
+          <button id="btn-banner-rules" class="btn-rules-trigger btn-secondary" style="border-color: var(--gold); color: #fef08a; font-weight: 700; padding: 8px 18px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);" title="Expliquer les règles et afficher le détail de toutes les cartes avant de lancer la partie">
+            📖 Règles & Détail des Cartes
+          </button>
+          <button id="btn-toggle-night-curtain" class="btn-secondary" style="display: none; border-color: #a855f7; color: #d8b4fe; font-weight: 700; padding: 8px 16px;" title="Basculer l'affichage du rideau sombre / cachettes sur le plan">
+            👁️ Dévoiler la carte
+          </button>
+          <button id="btn-banner-reveal-deaths" class="btn-danger" style="display: none; padding: 8px 16px; font-weight: 700; font-size: 0.95rem; box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);" title="Éliminer les victimes et révéler les morts sur tous les téléphones">
+            ⚰️ Bilan des Morts & Révélation 💀
+          </button>
+          <button id="btn-banner-village-vote" class="btn-primary" style="display: none; background: linear-gradient(135deg, #d97706, #b45309); border-color: #f59e0b; color: #fff; font-weight: 800; padding: 8px 18px; font-size: 0.95rem; box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);" title="Enregistrer le joueur condamné par le vote des villageois">
+            ⚖️ Vote du Village
+          </button>
+          <span id="badge-alive-count" class="badge badge-dawn" style="font-size: 1rem; padding: 8px 16px;">
+            0 Survivants
+          </span>
+          <span id="badge-dead-count" class="badge badge-night" style="font-size: 1rem; padding: 8px 16px;">
+            0 Éliminés 💀
+          </span>
+          <button id="btn-add-test-5" class="btn-icon" style="font-size: 0.8rem; padding: 6px 10px;" title="Ajouter 5 joueurs de test">+5 Test</button>
+        </div>
+
+      </div>
+
+      <!-- Stage layout : Schéma du Manoir (Gauche) & Palmarès / Vainqueurs de chaque partie (Droite) -->
+      <div class="host-stage-layout">
+        
+        <div class="host-map-column">
+          <!-- Le Schéma Architectural du Manoir avec l'Image en Fond -->
+          <div class="manor-map-board">
+            <!-- Barre de Contrôle TV pendant la Nuit pour l'Animateur -->
+            <div id="tv-status-bar" style="display: none; align-items: center; justify-content: space-between; background: rgba(22, 17, 34, 0.95); border: 2px solid #a855f7; border-radius: var(--radius-sm); padding: 8px 16px; margin-bottom: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.3rem;">📺</span>
+                <div>
+                  <div style="font-size: 0.95rem; font-weight: 700; color: #fff;">
+                    Écran TV public : <span id="tv-status-label" style="color: #f87171;">🙈 Carte masquée (Yeux fermés)</span>
+                  </div>
+                  <div style="font-size: 0.78rem; color: #cbd5e1;">
+                    Votre plan ci-dessous reste toujours visible en direct pour vous.
+                  </div>
+                </div>
+              </div>
+              <button type="button" id="btn-toggle-tv-from-map" class="btn-primary" style="padding: 7px 16px; font-size: 0.92rem; font-weight: 800; cursor: pointer;">
+                👁️ Dévoiler la carte sur la TV
+              </button>
+            </div>
+
+            <div class="manor-map-canvas">
+              <img src="/assets/manoir/plan_manoir.jpg" alt="Plan du Manoir" class="manor-bg-image">
+
+              <!-- 1. LA CHAMBRE (Haut Gauche) -->
+              <div class="room-overlay-zone room-chambre" id="box-chambre" data-room="chambre">
+                <div class="room-overlay-header">
+                  <span class="room-overlay-title">🛏️ Chambre</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <button class="btn-quick-pyro" data-room="chambre" title="Faire sauter / Restaurer la Chambre">💣</button>
+                    <span class="room-overlay-badge" id="count-chambre">0</span>
+                  </div>
+                </div>
+                <div class="map-occupants" id="occupants-chambre"></div>
+              </div>
+
+              <!-- 2. LA CUISINE (Haut Droite) -->
+              <div class="room-overlay-zone room-cuisine" id="box-cuisine" data-room="cuisine">
+                <div class="room-overlay-header">
+                  <span class="room-overlay-title">🍲 Cuisine</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <button class="btn-quick-pyro" data-room="cuisine" title="Faire sauter / Restaurer la Cuisine">💣</button>
+                    <span class="room-overlay-badge" id="count-cuisine">0</span>
+                  </div>
+                </div>
+                <div class="map-occupants" id="occupants-cuisine"></div>
+              </div>
+
+              <!-- 3. LA SALLE À MANGER (Bas Gauche) -->
+              <div class="room-overlay-zone room-salle_a_manger" id="box-salle_a_manger" data-room="salle_a_manger">
+                <div class="room-overlay-header">
+                  <span class="room-overlay-title">🕯️ Salle à Manger</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <button class="btn-quick-pyro" data-room="salle_a_manger" title="Faire sauter / Restaurer la Salle à Manger">💣</button>
+                    <span class="room-overlay-badge" id="count-salle_a_manger">0</span>
+                  </div>
+                </div>
+                <div class="map-occupants" id="occupants-salle_a_manger"></div>
+              </div>
+
+              <!-- 4. LE SALON (Bas Centre) -->
+              <div class="room-overlay-zone room-salon" id="box-salon" data-room="salon">
+                <div class="room-overlay-header">
+                  <span class="room-overlay-title">🔥 Salon</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <button class="btn-quick-pyro" data-room="salon" title="Faire sauter / Restaurer le Salon">💣</button>
+                    <span class="room-overlay-badge" id="count-salon">0</span>
+                  </div>
+                </div>
+                <div class="map-occupants" id="occupants-salon"></div>
+              </div>
+
+              <!-- 5. LE GRENIER (Bas Droite) -->
+              <div class="room-overlay-zone room-grenier" id="box-grenier" data-room="grenier">
+                <div class="room-overlay-header">
+                  <span class="room-overlay-title">🕷️ Grenier</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <button class="btn-quick-pyro" data-room="grenier" title="Faire sauter / Restaurer le Grenier">💣</button>
+                    <span class="room-overlay-badge" id="count-grenier">0</span>
+                  </div>
+                </div>
+                <div class="map-occupants" id="occupants-grenier"></div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- VUE DÉTAILLÉE DES SALLES POUR MOBILE (CARTES LISIBLES ET TACTILES) -->
+          <div class="mobile-room-cards-container" id="mobile-room-cards-container">
+            <div class="mobile-rooms-header">
+              <span style="font-weight: 700; color: var(--gold-light); font-size: 0.95rem;">
+                📋 Salles & Occupants en direct :
+              </span>
+              <span id="mobile-rooms-status-note" style="font-size: 0.8rem; color: var(--text-muted);">
+                5 pièces
+              </span>
+            </div>
+            <div class="mobile-rooms-list" id="mobile-rooms-list">
+              <!-- Injecté dynamiquement par host.js avec cartes tactiles pour chaque pièce -->
+            </div>
+          </div>
+
+          <!-- BANDEAUX EN CÔTE À CÔTE : COULOIRS & CIMETIÈRE 💀 (Gain d'espace vertical) -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;">
+            <!-- BANDEAU DES JOUEURS DANS LES COULOIRS (NON PLACÉS) -->
+            <div id="unassigned-bar-box" style="background: rgba(13, 9, 21, 0.75); border: 1px dashed var(--border-gold); border-radius: var(--radius-md); padding: 10px 14px; min-height: 90px; display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-weight: 700; color: var(--gold-light); font-size: 0.92rem;">
+                  🚪 Dans les couloirs :
+                </span>
+                <span id="unassigned-counter" style="font-size: 0.82rem; color: var(--text-muted);">0 joueur</span>
+              </div>
+              <div class="occupants-list" id="occupants-unassigned" style="flex: 1; overflow-y: auto; max-height: 110px;">
+                <span style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">En attente de connexion...</span>
+              </div>
+            </div>
+
+            <!-- SECTION CIMETIÈRE : LES SPECTRES ÉLIMINÉS 💀 -->
+            <div id="graveyard-box" style="background: rgba(30, 8, 14, 0.75); border: 1px solid var(--crimson); border-radius: var(--radius-md); padding: 10px 14px; min-height: 90px; display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-weight: 700; color: #f87171; font-size: 0.92rem;">
+                  ⚰️ Cimetière — Spectres 💀 :
+                </span>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <button id="btn-open-host-spectre-chat" type="button" class="btn-secondary" style="padding: 2px 8px; font-size: 0.74rem; border-color: #a855f7; color: #d8b4fe; display: flex; align-items: center; gap: 4px;" title="Consulter la messagerie secrète des spectres">
+                    <span>💬 Chat Morts</span>
+                    <span id="host-spectre-badge" class="badge" style="display: none; background: #dc2626; color: #fff; font-size: 0.65rem; padding: 1px 4px;">•</span>
+                  </button>
+                  <span id="graveyard-counter" style="font-size: 0.82rem; color: #fca5a5;">0 éliminé</span>
+                </div>
+              </div>
+              <div class="occupants-list" id="occupants-graveyard" style="flex: 1; overflow-y: auto; max-height: 110px;">
+                <span style="color: #94a3b8; font-size: 0.85rem; font-style: italic;">Aucun mort pour le moment.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne Droite : Palmarès & Vainqueurs de chaque partie -->
+        <aside class="winners-side-panel" id="winners-side-panel">
+          <!-- En-tête -->
+          <div class="panel-header">
+            <div class="panel-title">
+              <span>🏆</span>
+              <div>
+                <div>Palmarès du Manoir</div>
+                <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-body); font-weight: normal;">Vainqueurs de chaque partie</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button id="btn-new-round" class="btn-secondary" style="font-size: 0.78rem; padding: 5px 9px; border-color: var(--gold); color: #fef08a;" title="Démarrer une nouvelle manche pour la partie suivante (ressuscite les joueurs et réinitialise les salles)">
+                🔄 Nouvelle Manche
+              </button>
+              <button id="btn-clear-history" class="btn-icon" style="font-size: 0.8rem; padding: 5px 8px; color: #94a3b8;" title="Effacer l'historique et réinitialiser les scores">
+                🗑️
+              </button>
+            </div>
+          </div>
+
+          <!-- ⚙️ REGLAGES RAPIDES : NUITS & MONSTRES -->
+          <div class="game-config-card" style="background: rgba(18, 12, 28, 0.95); border: 1.5px solid var(--border-gold); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 12px; box-shadow: inset 0 0 12px rgba(0,0,0,0.6);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-family: var(--font-gothic); font-size: 0.92rem; color: var(--gold-light); font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                ⚙️ Paramètres de la Manche
+              </span>
+              <span id="config-roster-recommendation" style="font-size: 0.74rem; color: #a1a1aa; font-style: italic;">
+                Conseil : 3 monstres / 5 nuits
+              </span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <!-- Réglage Nombres de Nuits -->
+              <div style="background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 8px; padding: 6px 10px; display: flex; flex-direction: column; gap: 4px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.74rem; color: #d8b4fe; font-weight: 700;">🌙 Nuits Max</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+                  <button type="button" id="btn-cfg-minus-nights" class="btn-icon" style="padding: 2px 8px; font-size: 0.85rem; font-weight: 800; border-color: #a855f7;" title="Diminuer le nombre max de nuits">-</button>
+                  <strong id="cfg-display-nights" style="font-size: 1rem; color: #fef08a; font-family: var(--font-gothic); white-space: nowrap;">5 Nuits</strong>
+                  <button type="button" id="btn-cfg-plus-nights" class="btn-icon" style="padding: 2px 8px; font-size: 0.85rem; font-weight: 800; border-color: #a855f7;" title="Augmenter le nombre max de nuits">+</button>
+                </div>
+              </div>
+
+              <!-- Réglage Nombre de Monstres -->
+              <div style="background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(220, 38, 38, 0.45); border-radius: 8px; padding: 6px 10px; display: flex; flex-direction: column; gap: 4px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.74rem; color: #fca5a5; font-weight: 700;">🐺 Monstres</span>
+                  <span id="cfg-monsters-tagged-badge" style="font-size: 0.68rem; color: #fca5a5; background: rgba(185, 28, 28, 0.35); padding: 0 4px; border-radius: 4px;" title="Monstres marqués parmi les joueurs">0/3</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+                  <button type="button" id="btn-cfg-minus-monsters" class="btn-icon" style="padding: 2px 8px; font-size: 0.85rem; font-weight: 800; border-color: #ef4444;" title="Diminuer le nombre de monstres">-</button>
+                  <strong id="cfg-display-monsters" style="font-size: 1rem; color: #fca5a5; font-family: var(--font-gothic); white-space: nowrap;">3 Monstres</strong>
+                  <button type="button" id="btn-cfg-plus-monsters" class="btn-icon" style="padding: 2px 8px; font-size: 0.85rem; font-weight: 800; border-color: #ef4444;" title="Augmenter le nombre de monstres">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compteur de Nuit pour la partie active -->
+          <div class="night-tracker-box">
+            <div class="night-tracker-header">
+              <span class="night-tracker-title">
+                <span>🌙</span> Manche active : <strong id="current-night-label" style="color: #fef08a;">Nuit 1 / 5</strong>
+              </span>
+              <div style="display: flex; gap: 4px;">
+                <button id="btn-prev-night" class="btn-icon" style="padding: 2px 8px; font-size: 0.75rem;" title="Nuit précédente">◀</button>
+                <button id="btn-next-night" class="btn-icon" style="padding: 2px 8px; font-size: 0.75rem;" title="Nuit suivante">▶</button>
+              </div>
+            </div>
+
+            <div class="night-pills-row" id="night-pills-row">
+              <!-- Injecté dynamiquement par host.js selon maxNights -->
+            </div>
+
+            <div id="night-5-warning" class="night-ultime-warn" style="display: none;">
+              ⚠️ <strong id="night-warning-title">Nuit Ultime !</strong> Les monstres l'emportent à l'aube s'ils ne sont pas démasqués !
+            </div>
+          </div>
+
+          <!-- Tableau des Scores Globaux (Hall of Fame) -->
+          <div class="scores-grid">
+            <div class="score-card camp-village">
+              <span class="score-card-icon">🛡️</span>
+              <span class="score-card-label">Village</span>
+              <div class="score-card-val" id="score-val-village">0</div>
+            </div>
+            <div class="score-card camp-monsters">
+              <span class="score-card-icon">🐺</span>
+              <span class="score-card-label">Monstres</span>
+              <div class="score-card-val" id="score-val-monsters">0</div>
+            </div>
+            <div class="score-card camp-pyro">
+              <span class="score-card-icon">💣</span>
+              <span class="score-card-label">Pyromane</span>
+              <div class="score-card-val" id="score-val-pyro">0</div>
+            </div>
+          </div>
+
+          <!-- Actions Rapides : Proclamer le Vainqueur de la Partie -->
+          <div class="proclaim-box">
+            <div class="proclaim-label">
+              <span>⚡</span> Proclamer le Vainqueur de la manche :
+            </div>
+            <div class="proclaim-buttons">
+              <button id="btn-proclaim-village" class="btn-proclaim btn-proclaim-village" title="Proclamer la victoire des Villageois">
+                <span>🛡️ Victoire Villageois</span>
+                <span style="font-size: 0.72rem; opacity: 0.9;">(Monstres démasqués)</span>
+              </button>
+              <button id="btn-proclaim-monsters" class="btn-proclaim btn-proclaim-monsters" title="Proclamer la victoire des Monstres">
+                <span>🐺 Victoire Monstres</span>
+                <span style="font-size: 0.72rem; opacity: 0.9;">(Survécu 5 nuits ou massacré)</span>
+              </button>
+              <button id="btn-proclaim-pyro" class="btn-proclaim btn-proclaim-pyro" title="Proclamer la victoire du Pyromane">
+                <span>💣 Victoire Pyromane</span>
+                <span style="font-size: 0.72rem; opacity: 0.9;">(Dernier survivant solo)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Historique Détaillé des Parties -->
+          <div class="history-container">
+            <div class="history-header">
+              <span>📜 Historique des parties (<span id="history-total-count">0</span>) :</span>
+              <span style="font-size: 0.72rem; color: var(--gold-light);">Dernières en premier</span>
+            </div>
+            <div class="history-list" id="history-list">
+              <div style="color: var(--text-muted); font-size: 0.8rem; font-style: italic; text-align: center; padding: 18px 8px;">
+                Aucune partie enregistrée.<br>Terminez une manche et proclamez le vainqueur !
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- SECTION MOBILE : JOUEURS / PARTICIPANTS (TAB 2) -->
+        <section class="mobile-tab-section" id="mobile-players-tab-section" style="display: none;">
+          <div class="mobile-section-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px;">
+              <h2 style="font-family: var(--font-gothic); font-size: 1.25rem; color: #38bdf8; margin: 0; display: flex; align-items: center; gap: 6px;">
+                <span>👥</span> Participants (<span id="mobile-players-count">0</span>)
+              </h2>
+              <button type="button" id="btn-mobile-add-manual" class="btn-primary" style="padding: 8px 14px; font-size: 0.85rem; white-space: nowrap;">
+                + Sans Téléphone
+              </button>
+            </div>
+            <input type="text" id="mobile-roster-search" placeholder="🔍 Rechercher un participant..."
+              style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-gold); border-radius: 8px; color: #fff; font-size: 0.95rem; margin-bottom: 12px; box-sizing: border-box;">
+            <div id="mobile-roster-list" style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Injecté dynamiquement par host.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION MOBILE : RÉGIE & OUTILS (TAB 4) -->
+        <section class="mobile-tab-section" id="mobile-tools-tab-section" style="display: none;">
+          <div class="mobile-section-card">
+            <h2 style="font-family: var(--font-gothic); font-size: 1.25rem; color: var(--gold-light); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+              <span>⚙️</span> Régie & Outils de l'Animateur
+            </h2>
+            <div class="mobile-tools-grid">
+              <button type="button" id="btn-m-tool-rules" class="mobile-tool-card" style="border-color: var(--gold); background: linear-gradient(135deg, rgba(212,175,55,0.18), rgba(18,12,28,0.95));">
+                <span class="tool-card-icon">📖</span>
+                <strong style="color: #fef08a;">Règles & Cartes</strong>
+                <span>13 rôles & projection TV</span>
+              </button>
+
+              <button type="button" id="btn-m-tool-spectre-chat" class="mobile-tool-card" style="border-color: #a855f7; background: linear-gradient(135deg, rgba(168,85,247,0.18), rgba(18,12,28,0.95));">
+                <span class="tool-card-icon">💬</span>
+                <strong style="color: #e9d5ff;">Chat des Morts <span id="m-tool-spectre-badge" class="badge" style="display: none; background: #ef4444; color: #fff; font-size: 0.72rem; padding: 2px 6px; border-radius: 10px; margin-left: 4px;">0</span></strong>
+                <span>Modérer le salon des spectres</span>
+              </button>
+
+              <button type="button" id="btn-m-tool-pyro" class="mobile-tool-card" style="border-color: #ef4444;">
+                <span class="tool-card-icon">💣</span>
+                <strong>Pouvoir Pyromane</strong>
+                <span>Faire sauter une pièce</span>
+              </button>
+
+              <button type="button" id="btn-m-tool-deaths" class="mobile-tool-card" style="border-color: #dc2626;">
+                <span class="tool-card-icon">⚰️</span>
+                <strong>Bilan des Morts</strong>
+                <span>Éliminer et révéler</span>
+              </button>
+
+              <button type="button" id="btn-m-tool-qr" class="mobile-tool-card" style="border-color: var(--gold);">
+                <span class="tool-card-icon">📱</span>
+                <strong>QR Code Joueurs</strong>
+                <span>Afficher pour scan</span>
+              </button>
+
+              <button type="button" id="btn-m-tool-manual" class="mobile-tool-card" style="border-color: #38bdf8;">
+                <span class="tool-card-icon">🕯️</span>
+                <strong>+ Sans Téléphone</strong>
+                <span>Ajouter un joueur</span>
+              </button>
+
+              <button type="button" id="btn-m-tool-restart-night" class="mobile-tool-card" style="border-color: #f59e0b;">
+                <span class="tool-card-icon">🔄</span>
+                <strong>Relancer la Nuit</strong>
+                <span>Remettre chrono 60s</span>
+              </button>
+
+              <button type="button" id="btn-m-tool-new-round" class="mobile-tool-card" style="border-color: #10b981;">
+                <span class="tool-card-icon">🏆</span>
+                <strong>Nouvelle Manche</strong>
+                <span>Conserver les scores</span>
+              </button>
+
+              <a href="/tv.html" target="_blank" class="mobile-tool-card" style="border-color: #a855f7; text-decoration: none; color: inherit;">
+                <span class="tool-card-icon">📺</span>
+                <strong>Écran TV</strong>
+                <span>Ouvrir dans un onglet</span>
+              </a>
+
+              <button type="button" id="btn-m-tool-reset-all" class="mobile-tool-card" style="border-color: #b91c1c;">
+                <span class="tool-card-icon">🏰</span>
+                <strong>Relancer Partie</strong>
+                <span>Reset complet du jeu</span>
+              </button>
+
+              <button type="button" id="btn-m-tool-sound" class="mobile-tool-card">
+                <span class="tool-card-icon" id="m-tool-sound-icon">🔊</span>
+                <strong>Sonore</strong>
+                <span>Activer / Couper son</span>
+              </button>
+
+              <button type="button" id="btn-m-tool-fullscreen" class="mobile-tool-card">
+                <span class="tool-card-icon">⛶</span>
+                <strong>Plein Écran</strong>
+                <span>Basculer affichage</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- MODAL AJOUT JOUEUR SANS TÉLÉPHONE (ATTRIBUTION DIRECTE D'UNE PIÈCE) -->
+  <div id="modal-manual-player" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-gothic); color: var(--gold);">Ajouter un joueur sans téléphone</h3>
+        <button id="btn-close-manual-modal" class="btn-icon">✕</button>
+      </div>
+
+      <form id="form-add-manual" style="display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+        <div>
+          <label style="display: block; font-size: 0.85rem; color: var(--gold-light); font-weight: 700; margin-bottom: 6px;">Prénom du joueur :</label>
+          <input type="text" id="manual-input-name" required maxlength="16" placeholder="Ex: Thomas, Sarah..."
+            style="width: 100%; padding: 10px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-gold); border-radius: 6px; color: #fff; font-size: 1rem;">
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.85rem; color: var(--gold-light); font-weight: 700; margin-bottom: 6px;">Lui attribuer immédiatement une pièce :</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+            <button type="button" class="btn-secondary btn-pick-manual-room selected" data-room="grenier">🕷️ Le Grenier</button>
+            <button type="button" class="btn-secondary btn-pick-manual-room" data-room="chambre">🛏️ La Chambre</button>
+            <button type="button" class="btn-secondary btn-pick-manual-room" data-room="salon">🔥 Le Salon</button>
+            <button type="button" class="btn-secondary btn-pick-manual-room" data-room="salle_a_manger">🕯️ La Salle à Manger</button>
+            <button type="button" class="btn-secondary btn-pick-manual-room" data-room="cuisine" style="grid-column: span 2;">🍲 La Cuisine</button>
+            <button type="button" class="btn-secondary btn-pick-manual-room" data-room="" style="grid-column: span 2; border-color: #64748b;">🚪 Laisser dans le couloir</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" style="margin-top: 8px; width: 100%;">
+          ✓ Enregistrer et Placer dans la pièce
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL GESTION / DÉPLACEMENT JOUEUR -->
+  <div id="modal-move-player" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 id="modal-player-title" style="font-family: var(--font-gothic); color: var(--gold);">Gestion du joueur</h3>
+        <button id="btn-close-move" class="btn-icon">✕</button>
+      </div>
+
+      <!-- MODIFIER LE NOM DU PARTICIPANT -->
+      <div style="background: rgba(0,0,0,0.35); border: 1px solid var(--border-gold); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 14px;">
+        <label for="input-edit-player-name" style="display: block; font-size: 0.85rem; color: var(--gold-light); font-weight: 700; margin-bottom: 6px;">
+          ✏️ Modifier le nom du participant :
+        </label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="input-edit-player-name" maxlength="16" placeholder="Nom du joueur"
+            style="flex: 1; padding: 8px 12px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.25); border-radius: 6px; color: #fff; font-size: 0.95rem; font-weight: 600;">
+          <button type="button" id="btn-save-player-name" class="btn-primary" style="padding: 8px 14px; font-size: 0.85rem; font-weight: 700; white-space: nowrap;">
+            💾 Valider
+          </button>
+        </div>
+        <div id="rename-player-feedback" style="display: none; font-size: 0.78rem; color: #6ee7b7; margin-top: 6px; font-weight: 600;">
+          ✓ Nom modifié avec succès !
+        </div>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">
+        📍 Déplacer vers une autre salle :
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
+        <button class="btn-secondary btn-set-room" data-room="grenier">🕷️ Le Grenier</button>
+        <button class="btn-secondary btn-set-room" data-room="chambre">🛏️ La Chambre</button>
+        <button class="btn-secondary btn-set-room" data-room="salon">🔥 Le Salon</button>
+        <button class="btn-secondary btn-set-room" data-room="salle_a_manger">🕯️ La Salle à Manger</button>
+        <button class="btn-secondary btn-set-room" data-room="cuisine" style="grid-column: span 2;">🍲 La Cuisine</button>
+        <button class="btn-secondary btn-set-room" data-room="" style="grid-column: span 2; border-color: #64748b;">🚪 Remettre dans le couloir</button>
+      </div>
+
+      <!-- ACTIONS STATUT & RETRAIT -->
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+        <!-- CASE À COCHER INTERACTIVE AVEC COCHE VISUELLE ÉCLATANTE -->
+        <div id="monster-toggle-card" style="background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.25); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s ease; user-select: none;" title="Cliquer pour cocher ou décocher ce joueur comme Monstre">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="monster-card-emoji" style="font-size: 1.5rem;">🐺</span>
+            <div>
+              <div id="monster-card-title" style="font-weight: 800; font-size: 0.95rem; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <span>Rôle Secret : Monstre</span>
+                <span id="monster-checked-tag" style="display: none; background: #dc2626; color: #fff; font-size: 0.68rem; font-weight: 900; padding: 1px 7px; border-radius: 4px; box-shadow: 0 0 8px rgba(220,38,38,0.7);">✓ COCHÉ MONSTRE</span>
+              </div>
+              <div id="monster-card-desc" style="font-size: 0.76rem; color: var(--text-muted); margin-top: 2px;">
+                Cliquer pour cocher ce joueur comme Monstre 🐺
+              </div>
+            </div>
+          </div>
+          <!-- Boîte visuelle avec coche ✓ -->
+          <div id="monster-checkbox-box" style="width: 28px; height: 28px; border-radius: 7px; border: 2px solid rgba(255, 255, 255, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; font-weight: 900; background: rgba(0,0,0,0.4); color: #fff; transition: all 0.2s ease; flex-shrink: 0;">
+            <span id="monster-checkmark" style="display: none;">✓</span>
+          </div>
+        </div>
+        <div id="monster-toggle-feedback" style="display: none; font-size: 0.8rem; font-weight: 700; text-align: center; padding: 6px 10px; border-radius: 6px; transition: all 0.2s ease;"></div>
+        <!-- BOUTONS ACTIONS DE VIE / MORT & CAUSES D'ÉLIMINATION -->
+        <div id="player-alive-actions-box" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- Boutons principaux (Éliminer / Ressusciter + Retirer) -->
+          <div style="display: flex; gap: 10px;">
+            <button id="btn-toggle-alive" type="button" class="btn-danger" style="flex: 1.2; font-size: 0.9rem; font-weight: 700;">
+              💀 Éliminer ce joueur
+            </button>
+            <button id="btn-delete-player-trigger" type="button" class="btn-secondary" style="border-color: #ef4444; color: #fca5a5; font-size: 0.85rem; font-weight: 600;">
+              🗑️ Retirer du jeu
+            </button>
+          </div>
+
+          <!-- BANDEAU ÉTAT MORT SI DÉJÀ ÉLIMINÉ -->
+          <div id="player-dead-status-banner" style="display: none; background: rgba(185, 28, 28, 0.28); border: 1.5px solid var(--crimson); border-radius: 8px; padding: 8px 12px; font-size: 0.86rem; color: #fecaca; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              💀 Cause : <strong id="player-dead-reason-label" style="color: #fff;">🐺 Attaque des Monstres</strong>
+            </div>
+            <button type="button" id="btn-change-death-reason" class="btn-secondary" style="padding: 2px 10px; font-size: 0.74rem; border-color: rgba(255,255,255,0.3); color: #fff; font-weight: 700;" title="Modifier la cause de la mort">Modifier</button>
+          </div>
+
+          <!-- PANNEAU DE SÉLECTION DE LA CAUSE DE LA MORT -->
+          <div id="eliminate-reason-picker" style="display: none; background: rgba(22, 12, 32, 0.96); border: 1.5px solid var(--border-gold); border-radius: 8px; padding: 12px; box-shadow: 0 4px 18px rgba(0,0,0,0.7);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 0.88rem; font-weight: 800; color: var(--gold-light); display: flex; align-items: center; gap: 6px;">
+                ⚰️ Par quoi est mort ce joueur ?
+              </span>
+              <button type="button" id="btn-cancel-eliminate-reason" class="btn-icon" style="font-size: 0.75rem; padding: 2px 6px;" title="Annuler">✕</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+              <button type="button" class="btn-secondary btn-pick-death-reason" data-reason="monsters" style="border-color: #ef4444; color: #fca5a5; font-weight: 700; font-size: 0.84rem; padding: 9px 8px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                🐺 Monstres
+              </button>
+              <button type="button" class="btn-secondary btn-pick-death-reason" data-reason="vote" style="border-color: #f59e0b; color: #fef08a; font-weight: 700; font-size: 0.84rem; padding: 9px 8px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                ⚖️ Vote Village
+              </button>
+              <button type="button" class="btn-secondary btn-pick-death-reason" data-reason="sorciere" style="border-color: #a855f7; color: #d8b4fe; font-weight: 700; font-size: 0.84rem; padding: 9px 8px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                🧪 Sorcière
+              </button>
+              <button type="button" class="btn-secondary btn-pick-death-reason" data-reason="chasseur" style="border-color: #10b981; color: #6ee7b7; font-weight: 700; font-size: 0.84rem; padding: 9px 8px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                🏹 Chasseur
+              </button>
+              <button type="button" class="btn-secondary btn-pick-death-reason" data-reason="pyromane" style="border-color: #f97316; color: #fdba74; font-weight: 700; font-size: 0.84rem; padding: 9px 8px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                💣 Pyromane
+              </button>
+              <button type="button" class="btn-secondary btn-pick-death-reason" data-reason="manual" style="border-color: #64748b; color: #cbd5e1; font-weight: 600; font-size: 0.84rem; padding: 9px 8px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                👻 Inconnue
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Boîte de confirmation inline pour retirer le joueur -->
+        <div id="delete-player-confirm-box" style="display: none; background: rgba(185, 28, 28, 0.25); border: 1px solid var(--crimson); border-radius: 6px; padding: 10px; text-align: center;">
+          <div style="font-size: 0.88rem; color: #fecaca; margin-bottom: 8px; font-weight: 600;">
+            Êtes-vous sûr de vouloir retirer <span id="delete-player-confirm-name" style="font-weight: 700; color: #fff;">ce joueur</span> ?
+          </div>
+          <div style="display: flex; gap: 8px; justify-content: center;">
+            <button type="button" id="btn-confirm-delete-player" class="btn-danger" style="padding: 6px 14px; font-size: 0.85rem; font-weight: 700;">
+              ✓ Oui, Retirer
+            </button>
+            <button type="button" id="btn-cancel-delete-player" class="btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;">
+              Annuler
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL QR CODE -->
+  <div id="modal-qr" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="text-align: center; max-width: 420px;">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-gothic); color: var(--gold);">Rejoindre le Manoir</h3>
+        <button id="btn-close-qr" class="btn-icon">✕</button>
+      </div>
+      <div class="qr-container" style="padding: 10px 0;">
+        <img id="qr-code-img" src="" alt="QR Code" style="width: 260px; height: 260px; border-radius: var(--radius-md); border: 3px solid var(--gold); box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);">
+        <div class="join-link-box" id="join-link-text" style="font-size: 1.15rem; font-weight: bold; margin-top: 12px; word-break: break-all;">Chargement...</div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">
+          Scannez avec l'appareil photo du smartphone. Aucun téléchargement.
+        </p>
+      </div>
+
+      <!-- Option Réseau / Tunnel pour Centre de loisirs / 4G -->
+      <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: left;">
+        <details style="cursor: pointer;">
+          <summary style="font-size: 0.8rem; color: #7dd3fc; font-weight: 600; outline: none;">
+            🌐 Réseau bloqué ? Utiliser un tunnel (4G / Web)
+          </summary>
+          <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+            <p style="font-size: 0.74rem; color: var(--text-muted); margin: 0; line-height: 1.3;">
+              Si le Wi-Fi bloque la communication locale, collez ici votre lien de tunnel (ex: <code>https://...loca.lt</code>) pour actualiser le QR Code :
+            </p>
+            <div style="display: flex; gap: 6px;">
+              <input type="text" id="input-custom-join-url" placeholder="https://..." style="flex: 1; padding: 6px 10px; font-size: 0.82rem; border-radius: var(--radius-sm); border: 1px solid var(--border-gold); background: rgba(0,0,0,0.5); color: #fff;">
+              <button type="button" id="btn-apply-custom-url" class="btn-primary" style="padding: 6px 12px; font-size: 0.82rem; white-space: nowrap;">Valider</button>
+              <button type="button" id="btn-reset-custom-url" class="btn-secondary" style="padding: 6px 10px; font-size: 0.82rem;" title="Rétablir l'adresse IP locale">↺ IP Locale</button>
+            </div>
+            <div id="custom-url-status" style="font-size: 0.74rem; color: #6ee7b7; display: none;"></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL POUVOIR DU PYROMANE 🔥 -->
+  <div id="modal-pyro" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 520px; border-color: #ef4444; box-shadow: 0 0 35px rgba(239, 68, 68, 0.45);">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-gothic); color: #f87171; display: flex; align-items: center; gap: 8px;">
+          <span>💣</span> Pouvoir du Pyromane : Faire sauter une pièce
+        </h3>
+        <button id="btn-close-pyro" class="btn-icon">✕</button>
+      </div>
+
+      <div style="padding: 14px 0;">
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 14px; line-height: 1.4;">
+          Le Pyromane peut placer de l'essence et faire exploser une pièce <strong>tous les 2 tours</strong>. Tous les survivants présents sont instantanément pulvérisés 💀 et la pièce devient condamnée !
+        </p>
+
+        <label style="display: block; font-size: 0.85rem; color: var(--gold-light); font-weight: 700; margin-bottom: 8px;">
+          Choisissez la pièce à cibler :
+        </label>
+
+        <div id="pyro-room-selector" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px;">
+          <button type="button" class="btn-secondary btn-pyro-pick selected" data-room="chambre">🛏️ Chambre</button>
+          <button type="button" class="btn-secondary btn-pyro-pick" data-room="cuisine">🍲 Cuisine</button>
+          <button type="button" class="btn-secondary btn-pyro-pick" data-room="salle_a_manger">🕯️ Salle à Manger</button>
+          <button type="button" class="btn-secondary btn-pyro-pick" data-room="salon">🔥 Salon</button>
+          <button type="button" class="btn-secondary btn-pyro-pick" data-room="grenier" style="grid-column: span 2;">🕷️ Grenier</button>
+        </div>
+
+        <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 16px;">
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #fca5a5; font-size: 0.9rem; font-weight: 600;">
+            <input type="checkbox" id="pyro-kill-occupants" checked style="width: 18px; height: 18px; accent-color: #ef4444;">
+            <span>Éliminer immédiatement les survivants présents 💀</span>
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button id="btn-pyro-restore" class="btn-secondary" style="display: none; border-color: #f59e0b; color: #fbbf24;">
+            🔨 Reconstruire la salle
+          </button>
+          <button id="btn-pyro-trigger" class="btn-danger" style="display: flex; align-items: center; gap: 6px; font-weight: 700;">
+            <span>💥</span> Faire sauter la salle !
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERLAY VISUEL D'EXPLOSION FLAMMES (PLEIN ÉCRAN) -->
+  <div id="explosion-flash-overlay" class="explosion-flash-overlay" style="display: none;">
+    <div style="font-size: 5rem; animation: pulse-urgent 0.4s infinite alternate;">💥</div>
+    <div id="explosion-flash-title" style="font-family: var(--font-gothic); font-size: 2.4rem; color: #fef08a; text-shadow: 0 0 25px #ef4444; margin-top: 10px;">
+      BOOM ! LA SALLE A EXPLOSÉ !
+    </div>
+    <div id="explosion-flash-subtitle" style="font-size: 1.15rem; color: #fca5a5; margin-top: 6px;">
+      Le Pyromane a frappé cette nuit...
+    </div>
+  </div>
+
+  <!-- OVERLAY PLEIN ÉCRAN DE CÉLÉBRATION DE VICTOIRE 🏆 -->
+  <div id="celebration-overlay" class="celebration-overlay" style="display: none;">
+    <div class="celebration-box">
+      <div id="celebration-icon" class="celebration-icon">🏆</div>
+      <h2 id="celebration-title" class="celebration-title village">VICTOIRE DU VILLAGE !</h2>
+      <div id="celebration-subtitle" class="celebration-subtitle">Les 3 monstres ont été éliminés !</div>
+      
+      <div class="celebration-survivors">
+        <div style="font-size: 0.85rem; color: var(--gold-light); font-weight: 700; text-transform: uppercase; margin-bottom: 8px;">
+          Survivants & Héros de la partie :
+        </div>
+        <div id="celebration-survivors-list" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+          <!-- Injecté dynamiquement -->
+        </div>
+      </div>
+
+      <button id="btn-close-celebration" class="btn-primary" style="padding: 12px 30px; font-size: 1.1rem;">
+        Continuer / Retour au Manoir
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL DE PROCLAMATION DU VAINQUEUR AVEC DÉTAILS -->
+  <div id="modal-proclaim-details" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 id="modal-proclaim-title" style="font-family: var(--font-gothic); color: var(--gold); display: flex; align-items: center; gap: 8px;">
+          <span>🏆</span> Proclamer le Vainqueur
+        </h3>
+        <button id="btn-close-proclaim-modal" class="btn-icon">✕</button>
+      </div>
+
+      <form id="form-proclaim-winner" style="display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+        <div id="proclaim-camp-badge-preview" style="padding: 10px 14px; border-radius: 8px; font-weight: 700; text-align: center; font-size: 1.1rem; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #a7f3d0;">
+          🛡️ Victoire des Villageois
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.85rem; color: var(--gold-light); font-weight: 700; margin-bottom: 6px;">
+            Terminée en :
+          </label>
+          <div style="font-size: 0.95rem; color: #fff; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">
+            🌙 <span id="proclaim-modal-night-info">Nuit 1</span>
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.85rem; color: var(--gold-light); font-weight: 700; margin-bottom: 6px;">
+            Prénoms des vainqueurs / MVP (laisser vide pour les survivants actuels) :
+          </label>
+          <input type="text" id="proclaim-input-winners" placeholder="Ex: Arthur (Loup), Lucas..."
+            style="width: 100%; padding: 10px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-gold); border-radius: 6px; color: #fff; font-size: 0.95rem;">
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.85rem; color: var(--gold-light); font-weight: 700; margin-bottom: 6px;">
+            Note ou fait marquant (facultatif) :
+          </label>
+          <input type="text" id="proclaim-input-note" placeholder="Ex: Bluff magistral dans la cuisine !"
+            style="width: 100%; padding: 10px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-gold); border-radius: 6px; color: #fff; font-size: 0.95rem;">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 6px;">
+          <button type="button" id="btn-cancel-proclaim" class="btn-secondary" style="flex: 1;">
+            Annuler
+          </button>
+          <button type="submit" id="btn-submit-proclaim" class="btn-primary" style="flex: 1.5; font-weight: 700;">
+            🏆 Valider et Proclamer !
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL VOTE DU VILLAGE (DÉBATS DU JOUR) ⚖️ -->
+  <div id="modal-village-vote" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 540px; border-color: #f59e0b; box-shadow: 0 0 35px rgba(245, 158, 11, 0.45); max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header" style="border-bottom-color: rgba(245, 158, 11, 0.4);">
+        <h3 style="font-family: var(--font-gothic); color: #fef08a; display: flex; align-items: center; gap: 8px; font-size: 1.3rem; margin: 0;">
+          <span>⚖️</span> Vote du Village — Sentence des Débats
+        </h3>
+        <button id="btn-close-modal-vote" class="btn-icon">✕</button>
+      </div>
+
+      <div class="modal-body-scroll" style="flex: 1; overflow-y: auto; padding: 14px 4px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 0.92rem; color: #fef08a; line-height: 1.4;">
+          💬 <strong>Débats du village terminés :</strong> Sélectionnez le joueur condamné par le vote de la majorité autour de la table pour l'éliminer.
+        </div>
+
+        <!-- Option Aucun éliminé -->
+        <label style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s ease;">
+          <input type="radio" name="village_vote_pick" value="none" checked style="width: 20px; height: 20px; accent-color: #f59e0b; cursor: pointer;">
+          <span style="font-size: 1.3rem;">🚫</span>
+          <div>
+            <strong style="color: #cbd5e1; font-size: 0.95rem;">Aucun éliminé (Égalité ou Vote Blanc)</strong>
+            <div style="font-size: 0.76rem; color: #94a3b8;">Personne n'est éliminé lors de ces débats</div>
+          </div>
+        </label>
+
+        <label style="font-size: 0.85rem; color: var(--gold-light); font-weight: 700; margin-top: 4px;">
+          Ou sélectionnez le joueur voté parmi les survivants :
+        </label>
+
+        <!-- Liste dynamique des survivants injectée par host.js -->
+        <div id="vote-players-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+
+        <div>
+          <label style="display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 4px; font-weight: 600;">
+            Note facultative sur le vote :
+          </label>
+          <input type="text" id="vote-input-note" placeholder="Ex: Éliminé à la majorité (5 voix contre 2)" maxlength="60"
+            style="width: 100%; padding: 8px 12px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-gold); border-radius: var(--radius-sm); color: #fff; font-size: 0.9rem;">
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px; flex-shrink: 0;">
+        <button type="button" id="btn-cancel-modal-vote" class="btn-secondary" style="padding: 10px 18px;">
+          Annuler
+        </button>
+        <button type="button" id="btn-confirm-village-vote" class="btn-primary" style="padding: 10px 22px; font-weight: 800; font-size: 1rem; background: linear-gradient(135deg, #d97706, #b45309); border-color: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.45); cursor: pointer;">
+          ⚖️ Appliquer la sentence du Vote 💀
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL BILAN DES MORTS DE LA NUIT & SÉLECTION DES VICTIMES ⚰️ -->
+  <div id="modal-night-deaths" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 580px; max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-gothic); color: #f87171; display: flex; align-items: center; gap: 8px; margin: 0; font-size: 1.25rem;">
+          <span>⚰️</span> Bilan des Morts — <span id="night-deaths-modal-num">Nuit 1</span>
+        </h3>
+        <button id="btn-close-night-deaths-modal" class="btn-icon">✕</button>
+      </div>
+
+      <div class="modal-body-scroll" style="flex: 1; overflow-y: auto; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 4px 2px;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label style="font-size: 0.85rem; color: var(--gold-light); font-weight: 700; margin: 0;">
+              Sélectionnez les victimes à éliminer cette nuit :
+            </label>
+            <button type="button" id="btn-clear-night-deaths" class="btn-secondary" style="padding: 3px 8px; font-size: 0.75rem; border-radius: 4px;" title="Décocher toutes les victimes">
+              Tout décocher
+            </button>
+          </div>
+          <div id="night-deaths-players-list" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Injecté dynamiquement par host.js -->
+          </div>
+        </div>
+
+        <div style="background: rgba(0, 0, 0, 0.4); border-radius: var(--radius-sm); padding: 10px; border: 1px dashed var(--border-gold); font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+          ℹ️ En cliquant sur <strong>« Révéler les morts »</strong>, tous les joueurs recevront une notification sur leur téléphone indiquant qui est mort, et les victimes basculeront sur l'écran Spectre 💀.
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; flex-shrink: 0;">
+        <button type="button" id="btn-cancel-night-deaths" class="btn-secondary" style="flex: 1; padding: 12px 10px; font-size: 0.95rem;">
+          Annuler
+        </button>
+        <button type="button" id="btn-confirm-reveal-deaths" class="btn-danger" style="flex: 2; font-weight: 700; font-size: 1rem; padding: 12px 14px; box-shadow: 0 0 15px rgba(220, 38, 38, 0.4); white-space: nowrap;">
+          🌅 Révéler les Morts !
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERLAY PLEIN ÉCRAN : LE JOUR SE LÈVE / BILAN DES MORTS 🌅 -->
+  <div id="morning-deaths-overlay" class="morning-deaths-overlay" style="display: none;">
+    <div class="morning-deaths-box">
+      <div style="font-size: 4.5rem; margin-bottom: 8px; animation: candle-flicker 2s infinite ease-in-out;">🌅</div>
+      <h2 style="font-family: var(--font-gothic); font-size: 2.2rem; color: #fef08a; text-shadow: 0 0 20px rgba(245, 158, 11, 0.6); margin-bottom: 4px;">
+        LE JOUR SE LÈVE SUR LE MANOIR
+      </h2>
+      <div style="color: var(--gold-light); font-size: 1.1rem; margin-bottom: 12px;">
+        Bilan des ombres — <span id="morning-overlay-night-num" style="font-weight: 700;">Nuit 1</span>
+      </div>
+
+      <div id="morning-victims-container" class="morning-victims-grid">
+        <!-- Cartes des victimes injectées dynamiquement -->
+      </div>
+
+      <div style="margin-top: 14px; font-size: 1.05rem; color: #cbd5e1;">
+        Il reste <strong id="morning-survivors-count" style="color: #6ee7b7; font-size: 1.3rem;">0</strong> survivants pour démasquer les 3 monstres !
+      </div>
+
+      <button id="btn-close-morning-overlay" class="btn-primary" style="margin-top: 20px; padding: 12px 32px; font-size: 1.1rem;">
+        Passer aux Débats & Continuer 💬
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL RELANCER TOUTE LA PARTIE 🏰 -->
+  <div id="modal-reset-game" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 520px; border-color: #dc2626; box-shadow: 0 0 35px rgba(220, 38, 38, 0.45);">
+      <div class="modal-header" style="border-bottom-color: rgba(220, 38, 38, 0.4);">
+        <h3 style="font-family: var(--font-gothic); color: #fca5a5; display: flex; align-items: center; gap: 8px; font-size: 1.35rem; margin: 0;">
+          <span>🏰</span> Relancer toute la partie
+        </h3>
+        <button id="btn-close-modal-reset" class="btn-icon">✕</button>
+      </div>
+
+      <div style="margin: 14px 0 16px 0; display: flex; flex-direction: column; gap: 14px;">
+        <div style="background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.4); border-radius: var(--radius-sm); padding: 14px; font-size: 0.95rem; color: #fee2e2; line-height: 1.5;">
+          <strong>Voulez-vous réinitialiser complètement la partie en cours ?</strong>
+          <ul style="margin: 10px 0 0 20px; padding: 0; font-size: 0.9rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 5px;">
+            <li>🕯️ <strong>Tous les participants reviennent à la vie</strong> (même les éliminés)</li>
+            <li>🚪 <strong>Toutes les salles sont décondamnées</strong> et remises en état</li>
+            <li>🌙 <strong>Retour à la Nuit 1</strong> (décompte remis à 60s en attente)</li>
+            <li>📱 Les téléphones des joueurs reviennent à l'écran d'attente</li>
+            <li>📺 L'écran TV se réinitialise proprement</li>
+          </ul>
+        </div>
+
+        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; background: rgba(0,0,0,0.45); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px dashed var(--border-gold); user-select: none;">
+          <input type="checkbox" id="cb-reset-all-scores" style="width: 20px; height: 20px; cursor: pointer; accent-color: #dc2626;">
+          <span style="font-size: 0.9rem; color: #fef08a; font-weight: 600;">
+            Réinitialiser aussi le tableau des scores et effacer le palmarès
+          </span>
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+        <button type="button" id="btn-cancel-modal-reset" class="btn-secondary" style="padding: 10px 20px;">
+          Annuler
+        </button>
+        <button type="button" id="btn-confirm-reset-all" class="btn-danger" style="padding: 10px 24px; font-weight: 700; font-size: 1.05rem; box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);">
+          🏰 Oui, Relancer la partie !
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL RELANCER LA NUIT EN COURS 🔄 -->
+  <div id="modal-restart-night" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 490px; border-color: var(--gold); box-shadow: 0 0 30px rgba(245, 158, 11, 0.35);">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-gothic); color: var(--gold); display: flex; align-items: center; gap: 8px; font-size: 1.3rem; margin: 0;">
+          <span>🔄</span> Relancer la nuit
+        </h3>
+        <button id="btn-close-modal-restart-night" class="btn-icon">✕</button>
+      </div>
+
+      <div style="margin: 14px 0 16px 0; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-sm); padding: 14px; font-size: 0.95rem; color: #fef08a; line-height: 1.5;">
+        <strong>Recommencer le décompte de la nuit ?</strong>
+        <ul style="margin: 10px 0 0 20px; padding: 0; font-size: 0.9rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 5px;">
+          <li>⏳ Le chronomètre repart à <strong>60 secondes</strong></li>
+          <li>🔓 Les choix sont déverrouillés pour les survivants</li>
+          <li>🛡️ Personne n'est éliminé</li>
+        </ul>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+        <button type="button" id="btn-cancel-modal-restart-night" class="btn-secondary" style="padding: 10px 18px;">
+          Annuler
+        </button>
+        <button type="button" id="btn-confirm-restart-night-action" class="btn-primary" style="padding: 10px 22px; font-weight: 700; font-size: 1rem;">
+          🔄 Oui, Relancer la nuit (60s)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL NOUVELLE MANCHE 🔄 -->
+  <div id="modal-new-round" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 490px; border-color: var(--gold); box-shadow: 0 0 30px rgba(245, 158, 11, 0.35);">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-gothic); color: var(--gold); display: flex; align-items: center; gap: 8px; font-size: 1.3rem; margin: 0;">
+          <span>🔄</span> Nouvelle Manche
+        </h3>
+        <button id="btn-close-modal-new-round" class="btn-icon">✕</button>
+      </div>
+
+      <div style="margin: 14px 0 16px 0; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: var(--radius-sm); padding: 14px; font-size: 0.95rem; color: #93c5fd; line-height: 1.5;">
+        <strong>Démarrer une nouvelle manche pour la partie suivante ?</strong>
+        <ul style="margin: 10px 0 0 20px; padding: 0; font-size: 0.9rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 5px;">
+          <li>🕯️ Tous les joueurs sont ressuscités pour la manche suivante</li>
+          <li>🚪 Les salles sont réinitialisées et réparées</li>
+          <li>🌙 Retour à la Nuit 1 (chrono à 60s)</li>
+          <li>🏆 <strong>L'historique et les scores sont bien CONSERVÉS !</strong></li>
+        </ul>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+        <button type="button" id="btn-cancel-modal-new-round" class="btn-secondary" style="padding: 10px 18px;">
+          Annuler
+        </button>
+        <button type="button" id="btn-confirm-new-round-action" class="btn-primary" style="padding: 10px 22px; font-weight: 700; font-size: 1rem;">
+          🔄 Oui, Démarrer la Manche
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EFFACER HISTORIQUE DU PALMARÈS 🗑️ -->
+  <div id="modal-clear-history" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 480px; border-color: #dc2626; box-shadow: 0 0 30px rgba(220, 38, 38, 0.4);">
+      <div class="modal-header" style="border-bottom-color: rgba(220, 38, 38, 0.4);">
+        <h3 style="font-family: var(--font-gothic); color: #fca5a5; display: flex; align-items: center; gap: 8px; font-size: 1.3rem; margin: 0;">
+          <span>🗑️</span> Effacer le Palmarès
+        </h3>
+        <button id="btn-close-modal-clear-history" class="btn-icon">✕</button>
+      </div>
+
+      <div style="margin: 14px 0 16px 0; background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.4); border-radius: var(--radius-sm); padding: 14px; font-size: 0.95rem; color: #fee2e2; line-height: 1.5;">
+        ⚠️ Êtes-vous sûr de vouloir <strong>réinitialiser tous les scores</strong> (Village, Monstres, Pyromane) et effacer tout l'historique des parties enregistrées ?
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+        <button type="button" id="btn-cancel-modal-clear-history" class="btn-secondary" style="padding: 10px 18px;">
+          Annuler
+        </button>
+        <button type="button" id="btn-confirm-clear-history-action" class="btn-danger" style="padding: 10px 22px; font-weight: 700;">
+          🗑️ Oui, Tout Effacer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SUPPRIMER UNE PARTIE DE L'HISTORIQUE ✕ -->
+  <div id="modal-delete-history" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 460px; border-color: #dc2626;">
+      <div class="modal-header" style="border-bottom-color: rgba(220, 38, 38, 0.4);">
+        <h3 style="font-family: var(--font-gothic); color: #fca5a5; display: flex; align-items: center; gap: 8px; font-size: 1.25rem; margin: 0;">
+          <span>✕</span> Supprimer cette partie
+        </h3>
+        <button id="btn-close-modal-del-hist" class="btn-icon">✕</button>
+      </div>
+
+      <div style="margin: 14px 0 16px 0; font-size: 0.95rem; color: #cbd5e1; line-height: 1.5;">
+        Supprimer définitivement la <strong id="del-hist-label" style="color: #fff;">partie</strong> de l'historique ?
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+        <button type="button" id="btn-cancel-modal-del-hist" class="btn-secondary" style="padding: 10px 18px;">
+          Annuler
+        </button>
+        <button type="button" id="btn-confirm-del-hist-action" class="btn-danger" style="padding: 10px 22px; font-weight: 700;">
+          ✕ Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL GESTION DE TOUS LES PARTICIPANTS 👥 -->
+  <div id="modal-players-roster" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 620px; max-height: 85vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-gothic); color: #38bdf8; display: flex; align-items: center; gap: 8px;">
+          <span>👥</span> Liste des Participants (<span id="roster-modal-count">0</span>)
+        </h3>
+        <button id="btn-close-roster" class="btn-icon">✕</button>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px;">
+        <input type="text" id="roster-search-input" placeholder="🔍 Rechercher un participant..."
+          style="flex: 1; padding: 8px 12px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-gold); border-radius: 6px; color: #fff; font-size: 0.9rem;">
+        <button type="button" id="btn-roster-add-manual" class="btn-primary" style="padding: 8px 14px; font-size: 0.85rem; white-space: nowrap;">
+          + Sans Téléphone
+        </button>
+      </div>
+
+      <div id="roster-players-list" style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; max-height: 380px;">
+        <!-- Injecté dynamiquement par host.js -->
+      </div>
+
+      <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; display: flex; justify-content: flex-end;">
+        <button type="button" id="btn-roster-close-bottom" class="btn-secondary">
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL MESSAGERIE SECRÈTE DES SPECTRES & MODÉRATION (VUE HÔTE / RÉGIE) 💬 -->
+  <div id="modal-host-spectre-chat" class="modal-overlay" style="display: none; z-index: 99995;">
+    <div class="modal-content" style="max-width: 640px; width: 95vw; border-color: #a855f7; box-shadow: 0 0 45px rgba(168, 85, 247, 0.45); background: linear-gradient(180deg, rgba(20, 10, 32, 0.98) 0%, rgba(12, 6, 20, 0.99) 100%);">
+      
+      <!-- En-tête avec titre et boutons d'action rapide -->
+      <div class="modal-header" style="border-bottom-color: rgba(168, 85, 247, 0.4); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.6rem;">💬</span>
+          <div>
+            <h3 style="font-family: var(--font-gothic); color: #e9d5ff; font-size: 1.25rem; margin: 0;">
+              Salon des Spectres (Modération)
+            </h3>
+            <span style="font-size: 0.78rem; color: #c084fc;">Écoute en direct des défunts • Invisible pour les vivants</span>
+          </div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <!-- Bouton Rappel aux règles / Avertissement -->
+          <button type="button" id="btn-host-warn-chat" class="btn-secondary" style="border-color: var(--gold); color: #fef08a; font-size: 0.78rem; font-weight: 700; padding: 5px 10px;" title="Envoyer un rappel officiel à l'ordre dans le salon des morts">
+            ⚠️ Rappel aux Règles
+          </button>
+          <!-- Bouton Purger le salon -->
+          <button type="button" id="btn-host-clear-chat" class="btn-secondary" style="border-color: #ef4444; color: #fca5a5; font-size: 0.78rem; font-weight: 700; padding: 5px 10px;" title="Effacer tous les messages du salon (Purger)">
+            🧹 Purger
+          </button>
+          <button type="button" id="btn-close-host-spectre-chat" class="btn-icon" style="font-size: 1.3rem;">✕</button>
+        </div>
+      </div>
+
+      <!-- Bandeau des joueurs actuellement réduits au silence -->
+      <div id="host-muted-players-bar" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: var(--radius-sm); padding: 6px 12px; margin-top: 10px; font-size: 0.78rem; color: #fca5a5; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span>🔇 <strong>Joueurs réduits au silence :</strong></span>
+          <span id="host-muted-players-chips" style="display: flex; gap: 4px; flex-wrap: wrap;"></span>
+        </div>
+      </div>
+
+      <!-- Zone de défilement des messages avec outils de modération par bulle -->
+      <div style="padding: 12px 0 0 0;">
+        <div id="host-spectre-chat-messages" style="height: 320px; overflow-y: auto; background: rgba(8, 4, 14, 0.9); border: 1.5px solid rgba(168, 85, 247, 0.35); border-radius: var(--radius-sm); padding: 12px; display: flex; flex-direction: column; gap: 10px; text-align: left;">
+          <div class="host-spectre-empty" style="text-align: center; color: #94a3b8; font-size: 0.85rem; font-style: italic; margin-top: auto; padding: 20px 0;">
+            🕯️ Aucun message spectral pour le moment...
+          </div>
+        </div>
+
+        <!-- Raccourcis de modération rapide 1-clic -->
+        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;">
+          <button type="button" class="host-quick-mod-chip btn-secondary" data-msg="⚠️ Restez courtois et respectueux entre défunts svp !" style="font-size: 0.74rem; padding: 4px 8px; border-color: rgba(245, 158, 11, 0.5); color: #fef08a;">
+            ⚠️ Restez courtois
+          </button>
+          <button type="button" class="host-quick-mod-chip btn-secondary" data-msg="🤫 Silence les défunts, le village débat !" style="font-size: 0.74rem; padding: 4px 8px; border-color: rgba(168, 85, 247, 0.5); color: #e9d5ff;">
+            🤫 Silence les défunts
+          </button>
+          <button type="button" class="host-quick-mod-chip btn-secondary" data-msg="👀 L'arbitre surveille ce salon en temps réel." style="font-size: 0.74rem; padding: 4px 8px; border-color: rgba(56, 189, 248, 0.5); color: #bae6fd;">
+            👀 Surveillance active
+          </button>
+          <button type="button" class="host-quick-mod-chip btn-secondary" data-msg="👍 Bien reçu les spectres !" style="font-size: 0.74rem; padding: 4px 8px; border-color: rgba(16, 185, 129, 0.5); color: #6ee7b7;">
+            👍 C'est noté
+          </button>
+        </div>
+
+        <!-- Formulaire d'envoi en tant qu'Animateur -->
+        <form id="form-host-spectre-chat" style="display: flex; gap: 8px; margin-top: 10px;">
+          <input type="text" id="input-host-spectre-chat" maxlength="180" placeholder="Intervenir en tant que Maître du Jeu / Arbitre..." style="flex: 1; background: rgba(0, 0, 0, 0.65); border: 1.5px solid #a855f7; border-radius: var(--radius-sm); color: #fff; padding: 10px 14px; font-size: 0.92rem;" autocomplete="off">
+          <button type="submit" class="btn-primary" style="padding: 10px 16px; font-weight: 700; background: linear-gradient(135deg, #9333ea, #6b21a8); border-color: #c084fc; flex-shrink: 0;">
+            Murmurer 👻
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRE D'ACTION FLOTTANTE MOBILE (POUR ANIMATEUR DEBOUT) -->
+  <div class="mobile-sticky-footer" id="mobile-sticky-footer">
+    <button type="button" id="mobile-btn-main-action" class="btn-primary mobile-thumb-main-btn">
+      ⏳ Lancer le décompte (60s)
+    </button>
+    <div class="mobile-thumb-secondary-row">
+      <button type="button" id="mobile-btn-quick-rules" class="btn-secondary mobile-thumb-sub-btn" style="border-color: var(--gold); color: #fef08a;" title="Consulter les Règles et Cartes">
+        📖 Règles
+      </button>
+      <button type="button" id="mobile-btn-tv-toggle" class="btn-secondary mobile-thumb-sub-btn" style="display: none;">
+        📺 TV : Dévoiler
+      </button>
+      <button type="button" id="mobile-btn-quick-deaths" class="btn-danger mobile-thumb-sub-btn" style="display: none;">
+        ⚰️ Bilan des Morts
+      </button>
+      <button type="button" id="mobile-btn-quick-restart" class="btn-secondary mobile-thumb-sub-btn" title="Relancer le chrono">
+        🔄 Relancer (60s)
+      </button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/audio.js?v=12"></script>
+  <script src="/js/rules-modal.js?v=12"></script>
+  <script src="/js/host.js?v=14"></script>
+</body>
+</html>

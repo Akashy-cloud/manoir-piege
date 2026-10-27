@@ -97,6 +97,7 @@ const gameState = {
   players: new Map(), // id -> { id, name, avatar, room, isLocked, isAlive, hasPhone, eliminatedReason, connected }
   currentNight: 1,
   maxNights: 5,
+  monstersCount: 3,
   scores: {
     village: 0,
     monsters: 0,
@@ -146,6 +147,7 @@ function getPublicState(forPlayerId = null) {
       isLocked: p.isLocked,
       isAlive: p.isAlive,
       hasPhone: p.hasPhone,
+      isMonster: (forPlayerId === 'host' || forPlayerId === p.id) ? !!p.isMonster : false,
       eliminatedReason: p.eliminatedReason,
       connected: p.connected
     };
@@ -196,7 +198,8 @@ function getPublicState(forPlayerId = null) {
     deadCount,
     lockedCount: lockedAliveCount,
     currentNight: gameState.currentNight,
-    maxNights: gameState.maxNights,
+    maxNights: gameState.maxNights || 5,
+    monstersCount: gameState.monstersCount || 3,
     scores: gameState.scores,
     gameHistory: gameState.gameHistory,
     lastRevealedDeaths: gameState.lastRevealedDeaths,
@@ -238,6 +241,7 @@ function serializeGameState() {
       isLocked: !!p.isLocked,
       isAlive: p.isAlive !== false,
       hasPhone: p.hasPhone !== false,
+      isMonster: !!p.isMonster,
       eliminatedReason: p.eliminatedReason || null,
       assignmentType: p.assignmentType || null,
       connected: false
@@ -250,6 +254,7 @@ function serializeGameState() {
     phase: gameState.phase,
     currentNight: gameState.currentNight,
     maxNights: gameState.maxNights || 5,
+    monstersCount: gameState.monstersCount || 3,
     timerRemaining: gameState.timerRemaining,
     timerDuration: gameState.timerDuration,
     timerPaused: !!gameState.timerPaused,
@@ -278,6 +283,7 @@ function loadSessionState() {
 
     if (typeof data.currentNight === 'number') gameState.currentNight = data.currentNight;
     if (typeof data.maxNights === 'number') gameState.maxNights = data.maxNights;
+    if (typeof data.monstersCount === 'number') gameState.monstersCount = data.monstersCount;
     if (data.scores) gameState.scores = { ...gameState.scores, ...data.scores };
     if (Array.isArray(data.gameHistory)) gameState.gameHistory = data.gameHistory;
     if (Array.isArray(data.destroyedRooms)) gameState.destroyedRooms = new Set(data.destroyedRooms);
@@ -313,6 +319,7 @@ function loadSessionState() {
           isLocked: !!p.isLocked,
           isAlive: p.isAlive !== false,
           hasPhone: p.hasPhone !== false,
+          isMonster: !!p.isMonster,
           eliminatedReason: p.eliminatedReason || null,
           assignmentType: p.assignmentType || null,
           connected: false
@@ -828,6 +835,17 @@ io.on('connection', (socket) => {
         }
         break;
 
+      // Modifier la cause de la mort d'un joueur
+      case 'SET_PLAYER_DEATH_REASON': {
+        const p = gameState.players.get(payload?.playerId);
+        if (p) {
+          p.eliminatedReason = payload?.reason || 'manual';
+          scheduleSaveSessionState();
+          broadcastState();
+        }
+        break;
+      }
+
       // ⚖️ Élimination au Vote du Village pendant les débats de jour
       case 'VILLAGE_VOTE_ELIMINATE': {
         const targetId = payload?.playerId;
@@ -1216,6 +1234,36 @@ io.on('connection', (socket) => {
       case 'PREV_NIGHT': {
         if (gameState.currentNight > 1) {
           gameState.currentNight -= 1;
+        }
+        break;
+      }
+
+      // Configuration dynamique de la partie (Nuits & Monstres)
+      case 'SET_GAME_CONFIG': {
+        if (payload?.maxNights !== undefined) {
+          const mn = Math.max(2, Math.min(10, parseInt(payload.maxNights) || 5));
+          gameState.maxNights = mn;
+          if (gameState.currentNight > gameState.maxNights) {
+            gameState.currentNight = gameState.maxNights;
+          }
+        }
+        if (payload?.monstersCount !== undefined) {
+          const mc = Math.max(1, Math.min(10, parseInt(payload.monstersCount) || 3));
+          gameState.monstersCount = mc;
+        }
+        scheduleSaveSessionState();
+        broadcastState();
+        break;
+      }
+
+      // Marquer / Démarquer un joueur comme Monstre
+      case 'TOGGLE_PLAYER_MONSTER': {
+        const pId = payload?.playerId;
+        const player = gameState.players.get(pId);
+        if (player) {
+          player.isMonster = !player.isMonster;
+          scheduleSaveSessionState();
+          broadcastState();
         }
         break;
       }
