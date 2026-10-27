@@ -95,9 +95,9 @@
       camp: 'village',
       campLabel: 'Village',
       image: '/Images/Cartes/Le%20fossoyeur.jpg',
-      power: "Peut recycler l'âme d'une victime de sa pièce et la donner à un joueur la nuit suivante.",
-      tip: "Attention au choix : si donné à un Monstre par erreur, il garde le pouvoir pour 1 SEULE nuit !",
-      rulesDetail: "Rôle unique au Manoir : s'il dormait avec la victime, il transmet son pouvoir la nuit d'après. Permanent pour un villageois, 1 nuit seulement si donné à un monstre."
+      power: "Chaque nuit, il peut fouiller le cimetière et utiliser lui-même le pouvoir d'un rôle villageois mort.",
+      tip: "Règle de l'Âme Épuisée : impossible de canaliser la même âme 2 nuits de suite !",
+      rulesDetail: "Chaque nuit, il choisit un défunt du village et active immédiatement son pouvoir (voyance, protection, corbeau...). Garde-fous : jamais la même âme 2 nuits de suite, potions restantes uniquement pour la Sorcière, et fusil du Chasseur non réactivable."
     },
     {
       id: 'corbeau',
@@ -290,11 +290,11 @@
               
               <div style="background: rgba(212, 175, 55, 0.1); border: 1.5px solid rgba(212, 175, 55, 0.4); border-radius: var(--radius-sm); padding: 14px 16px;">
                 <strong style="color: var(--gold-light); font-size: 1rem; display: flex; align-items: center; gap: 8px;">
-                  <span>🎯</span> Objectif de la Partie (5 Nuits Maximum) :
+                  <span>🎯</span> Objectif de la Partie (<span class="rules-dyn-max-nights">5 Nuits</span> Maximum) :
                 </strong>
                 <p style="margin: 8px 0 0 0; color: #cbd5e1;">
-                  • <strong>Les Villageois</strong> gagnent s'ils démasquent et éliminent les <strong>3 Monstres</strong> avant la fin des <strong>5 nuits</strong>.<br>
-                  • <strong>Les Monstres</strong> gagnent s'ils éliminent tous les villageois ou s'il reste au moins 1 monstre en vie à l'issue de la 5ème nuit !<br>
+                  • <strong>Les Villageois</strong> gagnent s'ils démasquent et éliminent les <strong class="rules-dyn-monsters-count">3 Monstres</strong> avant la fin des <strong class="rules-dyn-max-nights-2">5 nuits</strong>.<br>
+                  • <strong>Les Monstres</strong> gagnent s'ils éliminent tous les villageois ou s'il reste au moins 1 monstre en vie à l'issue de la <span class="rules-dyn-final-night-label">5ème nuit</span> !<br>
                   • <strong>Le Pyromane</strong> gagne en solitaire s'il est le dernier survivant dans le Manoir.
                 </p>
               </div>
@@ -375,7 +375,7 @@
               <div class="call-order-num" style="background: linear-gradient(135deg, #9333ea, #6b21a8);">2</div>
               <div>
                 <strong style="color: #d8b4fe; font-size: 0.95rem;">⚰️ Le Fossoyeur (Recycleur d'Âmes)</strong><br>
-                <span style="font-size: 0.82rem; color: #cbd5e1;">S'il dormait dans la pièce d'un mort de la veille, il désigne un joueur vivant : le joueur reçoit le rôle et peut l'utiliser <strong>dès cette même nuit</strong> ! (Si donné à un monstre par erreur : 1 nuit seulement).</span>
+                <span style="font-size: 0.82rem; color: #cbd5e1;">Choisit une âme villageoise au cimetière (jamais la même 2 nuits de suite) et utilise <strong>lui-même son pouvoir dès cette nuit</strong> (voyance, protection, corbeau...). S'il n'y a aucun mort actif, il se rendort.</span>
               </div>
             </div>
 
@@ -697,11 +697,22 @@
       }
     }
 
+    function syncDynamicRulesText() {
+      const state = window.currentGameState || {};
+      const maxN = state.maxNights || 5;
+      const mCount = state.monstersCount || 3;
+      modal?.querySelectorAll('.rules-dyn-max-nights').forEach(el => el.textContent = `${maxN} Nuits`);
+      modal?.querySelectorAll('.rules-dyn-max-nights-2').forEach(el => el.textContent = `${maxN} nuits`);
+      modal?.querySelectorAll('.rules-dyn-monsters-count').forEach(el => el.textContent = `${mCount} Monstre${mCount > 1 ? 's' : ''}`);
+      modal?.querySelectorAll('.rules-dyn-final-night-label').forEach(el => el.textContent = `${maxN}ème nuit`);
+    }
+
     function openModal() {
       if (window.soundEngine && window.soundEngine.playSelect) {
         window.soundEngine.init();
         window.soundEngine.playSelect();
       }
+      syncDynamicRulesText();
       if (modal) modal.style.display = 'flex';
       updateLiveCardBadges();
     }

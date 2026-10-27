@@ -52,6 +52,22 @@ const modalMovePlayer = document.getElementById('modal-move-player');
 const modalPlayerTitle = document.getElementById('modal-player-title');
 const btnCloseMove = document.getElementById('btn-close-move');
 const btnToggleAlive = document.getElementById('btn-toggle-alive');
+const playerDeadStatusBanner = document.getElementById('player-dead-status-banner');
+const playerDeadReasonLabel = document.getElementById('player-dead-reason-label');
+const btnChangeDeathReason = document.getElementById('btn-change-death-reason');
+const eliminateReasonPicker = document.getElementById('eliminate-reason-picker');
+const btnCancelEliminateReason = document.getElementById('btn-cancel-eliminate-reason');
+
+const DEATH_REASON_LABELS = {
+  monsters: '🐺 Attaque des Monstres',
+  vote: '⚖️ Vote du Village',
+  sorciere: '🧪 Potion de la Sorcière',
+  chasseur: '🏹 Tir du Chasseur',
+  pyromane: '💣 Explosion / Pyromane',
+  timeout: '⏳ Couloirs / Temps écoulé',
+  manual: '👻 Cause Inconnue / Manuelle'
+};
+
 const inputEditPlayerName = document.getElementById('input-edit-player-name');
 const btnSavePlayerName = document.getElementById('btn-save-player-name');
 const renamePlayerFeedback = document.getElementById('rename-player-feedback');
@@ -647,7 +663,22 @@ function renderHostView(state) {
     if (canSeeRooms) {
       // SEULS LES JOUEURS EN VIE ET PRÉSENTS SONT DANS LA SALLE
       const occupants = state.players.filter(p => p.room === roomId && p.isAlive);
-      countEl.textContent = occupants.length;
+      const count = occupants.length;
+      countEl.textContent = count;
+
+      let density = 'normal';
+      if (count >= 7) density = 'packed';
+      else if (count >= 5) density = 'crowded';
+      else if (count >= 3) density = 'compact';
+
+      occupantsEl.setAttribute('data-density', density);
+      occupantsEl.setAttribute('data-count', count);
+
+      if (boxEl) {
+        boxEl.classList.toggle('occupied', count > 0 && !isDestroyed);
+        boxEl.setAttribute('data-occupants-count', count);
+        boxEl.setAttribute('data-density', density);
+      }
 
       if (occupants.length === 0) {
         occupantsEl.innerHTML = '<span class="empty-room-hint">Pièce vide</span>';
@@ -725,22 +756,56 @@ function renderHostView(state) {
     });
   }
 
-  // 5. Rendu du Palmarès & Compteur de Nuit
+  // 5. Rendu du Palmarès, Compteur de Nuit & Configuration
+  const maxN = state.maxNights || 5;
+  const currentN = state.currentNight || 1;
+  const monstersCount = state.monstersCount || 3;
+
   if (currentNightLabel) {
-    const night = state.currentNight || 1;
-    const maxN = state.maxNights || 5;
-    currentNightLabel.textContent = `Nuit ${night} / ${maxN}`;
+    currentNightLabel.textContent = `Nuit ${currentN} / ${maxN}`;
   }
 
-  // Puces de nuits
-  document.querySelectorAll('.btn-night-step').forEach(btn => {
-    const n = parseInt(btn.dataset.night);
-    btn.classList.toggle('active', n === (state.currentNight || 1));
-  });
+  // Rendu de la carte de réglages Nuits & Monstres
+  const cfgNightsEl = document.getElementById('cfg-display-nights');
+  const cfgMonstersEl = document.getElementById('cfg-display-monsters');
+  const cfgRecomEl = document.getElementById('config-roster-recommendation');
+  const cfgMonstersBadge = document.getElementById('cfg-monsters-tagged-badge');
 
-  if (night5Warning) {
-    night5Warning.style.display = (state.currentNight === 5) ? 'block' : 'none';
+  if (cfgNightsEl) cfgNightsEl.textContent = `${maxN} Nuit${maxN > 1 ? 's' : ''}`;
+  if (cfgMonstersEl) cfgMonstersEl.textContent = `${monstersCount} Monstre${monstersCount > 1 ? 's' : ''}`;
+
+  const allPlayers = state.players || [];
+  const taggedMonsters = allPlayers.filter(p => p.isMonster);
+  if (cfgMonstersBadge) {
+    cfgMonstersBadge.textContent = `${taggedMonsters.length}/${monstersCount} marqués`;
+    cfgMonstersBadge.style.background = taggedMonsters.length === monstersCount
+      ? 'rgba(16, 185, 129, 0.4)'
+      : 'rgba(185, 28, 28, 0.35)';
+    cfgMonstersBadge.style.color = taggedMonsters.length === monstersCount ? '#6ee7b7' : '#fca5a5';
   }
+
+  if (cfgRecomEl) {
+    const total = allPlayers.length;
+    let recMonsters = 2;
+    let recNights = 4;
+    if (total >= 16) {
+      recMonsters = 4;
+      recNights = 6;
+    } else if (total >= 12) {
+      recMonsters = 3;
+      recNights = 5;
+    } else if (total >= 9) {
+      recMonsters = 3;
+      recNights = 5;
+    } else {
+      recMonsters = 2;
+      recNights = 4;
+    }
+    cfgRecomEl.textContent = `Conseil (${total}j) : ${recMonsters} monstres / ${recNights} nuits`;
+  }
+
+  // Puces de nuits dynamiques
+  renderNightPills(state);
 
   // 6. Rendu des Scores (Hall of Fame)
   if (scoreValVillage) scoreValVillage.textContent = state.scores?.village || 0;
@@ -853,22 +918,26 @@ function createPlayerChip(player, isUnassigned = false) {
   let statusBadge = '';
   const isPyroTarget = player.eliminatedReason === 'pyromane' || (currentGameState?.pendingNightEliminations || []).includes(player.id);
   if (isPyroTarget) {
-    statusBadge = '<span style="font-size: 0.72rem; color: #fecaca; background: rgba(220,38,38,0.7); border: 1px solid #ef4444; padding: 2px 6px; border-radius: 8px; font-weight: 700;">💣 Cible Pyro</span>';
+    statusBadge = '<span class="chip-status-badge is-pyro" title="Cible Pyromane" style="font-size: 0.65rem; color: #fecaca; background: rgba(220,38,38,0.7); border: 1px solid #ef4444; padding: 1px 4px; border-radius: 6px; font-weight: 700;">💣</span>';
   } else if (isCountdown) {
     if (player.isLocked) {
       chip.classList.add('is-locked');
-      statusBadge = '<span style="font-size: 0.72rem; color: #a7f3d0; background: rgba(6,78,59,0.7); border: 1px solid #10b981; padding: 2px 6px; border-radius: 8px; font-weight: 700;">🔒 Prêt</span>';
+      statusBadge = '<span class="chip-status-badge is-locked" title="Choix validé" style="font-size: 0.65rem; color: #a7f3d0; background: rgba(6,78,59,0.7); border: 1px solid #10b981; padding: 1px 4px; border-radius: 6px; font-weight: 700;">🔒</span>';
     } else {
       chip.classList.add('is-thinking');
-      statusBadge = '<span style="font-size: 0.72rem; color: #fde047; background: rgba(120,53,15,0.6); border: 1px solid rgba(245,158,11,0.5); padding: 2px 6px; border-radius: 8px;">⏳ Choisit...</span>';
+      statusBadge = '<span class="chip-status-badge is-thinking" title="En train de choisir..." style="font-size: 0.65rem; color: #fde047; background: rgba(120,53,15,0.6); border: 1px solid rgba(245,158,11,0.5); padding: 1px 4px; border-radius: 6px;">⏳</span>';
     }
   }
 
+  const phoneBadge = !player.hasPhone ? '<span class="chip-phone-badge" title="Sans smartphone (gestion manuelle)" style="font-size: 0.62rem; color: var(--gold-light); background: rgba(0,0,0,0.5); padding: 1px 3px; border-radius: 5px; margin-left: 2px;">📵</span>' : '';
+  const monsterBadge = player.isMonster ? '<span class="chip-monster-badge" title="Monstre confirmé" style="font-size: 0.65rem; font-weight: 800; color: #fff; background: linear-gradient(135deg, #dc2626, #991b1b); border: 1.5px solid #f87171; padding: 1px 4px; border-radius: 4px; margin-left: 3px; box-shadow: 0 0 8px rgba(220, 38, 38, 0.7); display: inline-flex; align-items: center; gap: 2px;">🐺✓</span>' : '';
+
   chip.innerHTML = `
-    <span style="font-size: 1.25rem;">${player.avatar}</span>
-    <span style="font-size: 1.05rem; font-weight: 700; color: #fff;">${player.name}</span>
+    <span class="chip-avatar">${player.avatar}</span>
+    <span class="chip-name">${escapeHtml(player.name)}</span>
     ${statusBadge}
-    ${!player.hasPhone ? '<span style="font-size: 0.7rem; color: var(--gold-light); background: rgba(0,0,0,0.5); padding: 2px 5px; border-radius: 8px;">Sans tél</span>' : ''}
+    ${phoneBadge}
+    ${monsterBadge}
   `;
 
   if (isUnassigned) {
@@ -952,18 +1021,82 @@ socket.on('sleep_phase_started', () => {
   window.soundEngine.playGong();
 });
 
+// Met à jour l'apparence de la case à cocher Monstre dans la modale
+function updateMonsterToggleModalUI(isMonster) {
+  const card = document.getElementById('monster-toggle-card');
+  const desc = document.getElementById('monster-card-desc');
+  const tag = document.getElementById('monster-checked-tag');
+  const box = document.getElementById('monster-checkbox-box');
+  const check = document.getElementById('monster-checkmark');
+  const emoji = document.getElementById('monster-card-emoji');
+
+  if (!card) return;
+
+  if (isMonster) {
+    card.style.background = 'linear-gradient(135deg, rgba(220, 38, 38, 0.35), rgba(153, 27, 27, 0.22))';
+    card.style.borderColor = '#ef4444';
+    card.style.boxShadow = '0 0 18px rgba(239, 68, 68, 0.5), inset 0 0 10px rgba(220, 38, 38, 0.2)';
+    if (tag) tag.style.display = 'inline-block';
+    if (desc) desc.innerHTML = '<span style="color: #86efac; font-weight: 700;">✓ Coché avec succès : ce joueur est un Monstre !</span>';
+    if (box) {
+      box.style.background = '#dc2626';
+      box.style.borderColor = '#f87171';
+      box.style.boxShadow = '0 0 12px rgba(220, 38, 38, 0.9)';
+    }
+    if (check) check.style.display = 'block';
+    if (emoji) emoji.textContent = '🐺';
+  } else {
+    card.style.background = 'rgba(255, 255, 255, 0.05)';
+    card.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+    card.style.boxShadow = 'none';
+    if (tag) tag.style.display = 'none';
+    if (desc) desc.textContent = 'Cliquer pour cocher ce joueur comme Monstre 🐺';
+    if (box) {
+      box.style.background = 'rgba(0,0,0,0.4)';
+      box.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+      box.style.boxShadow = 'none';
+    }
+    if (check) check.style.display = 'none';
+    if (emoji) emoji.textContent = '🐺';
+  }
+
+  if (selectedPlayerForMove && modalPlayerTitle) {
+    const deadTxt = !selectedPlayerForMove.isAlive ? ' (💀 Mort)' : '';
+    const monsterTxt = isMonster ? ' 🐺 [COCHÉ MONSTRE]' : '';
+    modalPlayerTitle.textContent = `Gestion : ${selectedPlayerForMove.avatar} ${selectedPlayerForMove.name}${monsterTxt}${deadTxt}`;
+  }
+}
+
 // Modal de gestion / déplacement / renommage / élimination joueur
 function openMoveModal(player) {
   selectedPlayerForMove = player;
-  modalPlayerTitle.textContent = `Gestion : ${player.avatar} ${player.name} ${!player.isAlive ? '(💀 Mort)' : ''}`;
 
   if (inputEditPlayerName) inputEditPlayerName.value = player.name;
   if (renamePlayerFeedback) renamePlayerFeedback.style.display = 'none';
   if (deletePlayerConfirmBox) deletePlayerConfirmBox.style.display = 'none';
   if (deletePlayerConfirmName) deletePlayerConfirmName.textContent = player.name;
 
-  btnToggleAlive.innerHTML = player.isAlive ? '💀 Éliminer ce joueur' : '✨ Ressusciter ce joueur';
-  btnToggleAlive.className = player.isAlive ? 'btn-danger' : 'btn-primary';
+  if (eliminateReasonPicker) eliminateReasonPicker.style.display = 'none';
+
+  if (player.isAlive) {
+    btnToggleAlive.innerHTML = '💀 Éliminer ce joueur';
+    btnToggleAlive.className = 'btn-danger';
+    if (playerDeadStatusBanner) playerDeadStatusBanner.style.display = 'none';
+  } else {
+    btnToggleAlive.innerHTML = '✨ Ressusciter ce joueur';
+    btnToggleAlive.className = 'btn-primary';
+    if (playerDeadStatusBanner) {
+      playerDeadStatusBanner.style.display = 'flex';
+      if (playerDeadReasonLabel) {
+        playerDeadReasonLabel.textContent = DEATH_REASON_LABELS[player.eliminatedReason] || '👻 Cause Inconnue';
+      }
+    }
+  }
+
+  const feedback = document.getElementById('monster-toggle-feedback');
+  if (feedback) feedback.style.display = 'none';
+
+  updateMonsterToggleModalUI(!!player.isMonster);
 
   modalMovePlayer.style.display = 'flex';
   setTimeout(() => inputEditPlayerName?.focus(), 80);
@@ -971,6 +1104,7 @@ function openMoveModal(player) {
 
 btnCloseMove.addEventListener('click', () => {
   modalMovePlayer.style.display = 'none';
+  if (eliminateReasonPicker) eliminateReasonPicker.style.display = 'none';
   selectedPlayerForMove = null;
 });
 
@@ -1028,14 +1162,114 @@ document.querySelectorAll('.btn-set-room').forEach(btn => {
 btnToggleAlive.addEventListener('click', () => {
   if (!selectedPlayerForMove) return;
 
+  if (selectedPlayerForMove.isAlive) {
+    // Si vivant, ouvrir / basculer le sélecteur de cause de la mort
+    if (eliminateReasonPicker) {
+      const isHidden = eliminateReasonPicker.style.display === 'none' || !eliminateReasonPicker.style.display;
+      eliminateReasonPicker.style.display = isHidden ? 'block' : 'none';
+    }
+  } else {
+    // Si déjà mort, ressusciter immédiatement
+    socket.emit('host_action', {
+      action: 'TOGGLE_PLAYER_ALIVE',
+      payload: { playerId: selectedPlayerForMove.id, reason: null }
+    });
+    showHostToast(`✨ ${escapeHtml(selectedPlayerForMove.name)} a été ressuscité !`, 'success');
+    window.soundEngine?.playSelect?.();
+    modalMovePlayer.style.display = 'none';
+    selectedPlayerForMove = null;
+  }
+});
+
+// Bouton modifier la cause de mort si le joueur est déjà éliminé
+btnChangeDeathReason?.addEventListener('click', () => {
+  if (eliminateReasonPicker) {
+    const isHidden = eliminateReasonPicker.style.display === 'none' || !eliminateReasonPicker.style.display;
+    eliminateReasonPicker.style.display = isHidden ? 'block' : 'none';
+  }
+});
+
+// Annuler la sélection de la cause de la mort
+btnCancelEliminateReason?.addEventListener('click', () => {
+  if (eliminateReasonPicker) eliminateReasonPicker.style.display = 'none';
+});
+
+// Clic sur une cause de la mort (Monstres, Vote, Sorcière, Chasseur, Pyromane, Inconnue)
+document.querySelectorAll('.btn-pick-death-reason').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (!selectedPlayerForMove) return;
+    const reason = btn.dataset.reason || 'manual';
+    const reasonLabel = DEATH_REASON_LABELS[reason] || reason;
+
+    if (selectedPlayerForMove.isAlive) {
+      // Élimination du joueur avec la cause choisie
+      socket.emit('host_action', {
+        action: 'TOGGLE_PLAYER_ALIVE',
+        payload: { playerId: selectedPlayerForMove.id, reason: reason }
+      });
+
+      // Bruitage adapté selon la cause
+      if (reason === 'monsters' && window.soundEngine?.playWolfHowl) {
+        window.soundEngine.playWolfHowl();
+      } else if (reason === 'pyromane' && window.soundEngine?.playExplosion) {
+        window.soundEngine.playExplosion();
+      } else if (window.soundEngine?.playDoorLock) {
+        window.soundEngine.playDoorLock();
+      }
+
+      showHostToast(`💀 ${escapeHtml(selectedPlayerForMove.name)} éliminé (${reasonLabel})`, 'info');
+      modalMovePlayer.style.display = 'none';
+      selectedPlayerForMove = null;
+    } else {
+      // Modification de la cause pour un joueur déjà mort
+      socket.emit('host_action', {
+        action: 'SET_PLAYER_DEATH_REASON',
+        payload: { playerId: selectedPlayerForMove.id, reason: reason }
+      });
+      selectedPlayerForMove.eliminatedReason = reason;
+      if (playerDeadReasonLabel) playerDeadReasonLabel.textContent = reasonLabel;
+      if (eliminateReasonPicker) eliminateReasonPicker.style.display = 'none';
+      showHostToast(`Cause modifiée : ${reasonLabel}`, 'info');
+      window.soundEngine?.playSelect?.();
+    }
+  });
+});
+
+// Clic sur la carte case à cocher Monstre (Coche visuelle instantanée)
+document.getElementById('monster-toggle-card')?.addEventListener('click', () => {
+  if (!selectedPlayerForMove) return;
+
+  const newIsMonster = !selectedPlayerForMove.isMonster;
+  selectedPlayerForMove.isMonster = newIsMonster;
+
+  // Mise à jour visuelle instantanée dans la modale
+  updateMonsterToggleModalUI(newIsMonster);
+
+  // Message flash de confirmation bien visible
+  const feedback = document.getElementById('monster-toggle-feedback');
+  if (feedback) {
+    feedback.style.display = 'block';
+    if (newIsMonster) {
+      feedback.style.background = 'rgba(220, 38, 38, 0.35)';
+      feedback.style.border = '1.5px solid #ef4444';
+      feedback.style.color = '#fecaca';
+      feedback.innerHTML = `✓ <strong>${escapeHtml(selectedPlayerForMove.name)}</strong> est bien coché comme <strong>Monstre 🐺</strong> !`;
+    } else {
+      feedback.style.background = 'rgba(255, 255, 255, 0.08)';
+      feedback.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+      feedback.style.color = '#cbd5e1';
+      feedback.innerHTML = `Statut Monstre décoché pour <strong>${escapeHtml(selectedPlayerForMove.name)}</strong>.`;
+    }
+  }
+
+  // Émission au serveur
   socket.emit('host_action', {
-    action: 'TOGGLE_PLAYER_ALIVE',
-    payload: { playerId: selectedPlayerForMove.id, reason: 'manual' }
+    action: 'TOGGLE_PLAYER_MONSTER',
+    payload: { playerId: selectedPlayerForMove.id }
   });
 
-  window.soundEngine.playDoorLock();
-  modalMovePlayer.style.display = 'none';
-  selectedPlayerForMove = null;
+  window.soundEngine.playSelect();
+  // On laisse la modale ouverte pour que le MJ voie la coche s'allumer !
 });
 
 // Retirer un joueur avec confirmation inline 100% fiable
@@ -1219,15 +1453,74 @@ socket.on('room_exploded', ({ roomId, roomName, victims }) => {
 // 🏆 PALMARÈS, GESTION DES NUITS & PROCLAMATION VAINQUEURS
 // ========================================================
 
-// 1. Navigation dans les nuits
-document.querySelectorAll('.btn-night-step').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const night = parseInt(btn.dataset.night);
-    if (night) {
-      socket.emit('host_action', { action: 'SET_NIGHT', payload: { night } });
-      window.soundEngine.playSelect();
+// Générateur de boutons de nuits dynamiques selon maxNights
+function renderNightPills(state) {
+  const container = document.getElementById('night-pills-row');
+  if (!container) return;
+
+  const maxN = state.maxNights || 5;
+  const currentN = state.currentNight || 1;
+
+  container.innerHTML = '';
+  for (let n = 1; n <= maxN; n++) {
+    const btn = document.createElement('button');
+    btn.className = `btn-night-step ${n === currentN ? 'active' : ''}`;
+    btn.dataset.night = n;
+    if (n === maxN) {
+      btn.innerHTML = `🌕 Nuit ${n}`;
+      btn.title = `${n}e Nuit : Dernière chance des villageois !`;
+    } else {
+      btn.textContent = `Nuit ${n}`;
     }
-  });
+    btn.addEventListener('click', () => {
+      socket.emit('host_action', { action: 'SET_NIGHT', payload: { night: n } });
+      window.soundEngine.playSelect();
+    });
+    container.appendChild(btn);
+  }
+
+  const warningEl = document.getElementById('night-5-warning');
+  const warningTitle = document.getElementById('night-warning-title');
+  if (warningEl) {
+    const isFinalNight = currentN >= maxN;
+    warningEl.style.display = isFinalNight ? 'block' : 'none';
+    if (warningTitle) {
+      warningTitle.textContent = `${maxN}e Nuit Ultime !`;
+    }
+  }
+}
+
+// 1. Boutons de réglage de la configuration Nuits & Monstres
+document.getElementById('btn-cfg-minus-nights')?.addEventListener('click', () => {
+  const current = currentGameState?.maxNights || 5;
+  if (current > 2) {
+    socket.emit('host_action', { action: 'SET_GAME_CONFIG', payload: { maxNights: current - 1 } });
+    window.soundEngine.playSelect();
+  }
+});
+
+document.getElementById('btn-cfg-plus-nights')?.addEventListener('click', () => {
+  const current = currentGameState?.maxNights || 5;
+  if (current < 10) {
+    socket.emit('host_action', { action: 'SET_GAME_CONFIG', payload: { maxNights: current + 1 } });
+    window.soundEngine.playSelect();
+  }
+});
+
+document.getElementById('btn-cfg-minus-monsters')?.addEventListener('click', () => {
+  const current = currentGameState?.monstersCount || 3;
+  if (current > 1) {
+    socket.emit('host_action', { action: 'SET_GAME_CONFIG', payload: { monstersCount: current - 1 } });
+    window.soundEngine.playSelect();
+  }
+});
+
+document.getElementById('btn-cfg-plus-monsters')?.addEventListener('click', () => {
+  const current = currentGameState?.monstersCount || 3;
+  if (current < 8) {
+    socket.emit('host_action', { action: 'SET_GAME_CONFIG', payload: { monstersCount: current + 1 } });
+    window.soundEngine.playSelect();
+  }
 });
 
 btnPrevNight?.addEventListener('click', () => {
@@ -1887,6 +2180,9 @@ function renderRosterList() {
     const phoneBadge = p.hasPhone
       ? '<span style="font-size: 0.7rem; color: #7dd3fc; background: rgba(56, 189, 248, 0.15); padding: 2px 6px; border-radius: 6px;">📱 Tél</span>'
       : '<span style="font-size: 0.7rem; color: var(--gold-light); background: rgba(245, 158, 11, 0.15); padding: 2px 6px; border-radius: 6px;">🕯️ Sans tél</span>';
+    const monsterBadge = p.isMonster
+      ? '<span style="font-size: 0.72rem; color: #fff; background: linear-gradient(135deg, #dc2626, #991b1b); border: 1.5px solid #f87171; padding: 2px 7px; border-radius: 6px; font-weight: 800; display: inline-flex; align-items: center; gap: 3px; box-shadow: 0 0 8px rgba(220, 38, 38, 0.6);">🐺 ✓ Monstre</span>'
+      : '';
 
     item.innerHTML = `
       <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
@@ -1895,6 +2191,7 @@ function renderRosterList() {
           <div style="display: flex; align-items: center; gap: 6px;">
             <strong style="color: #fff; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(p.name)}</strong>
             ${phoneBadge}
+            ${monsterBadge}
           </div>
           <div style="font-size: 0.76rem; color: var(--text-muted); display: flex; gap: 10px; margin-top: 2px;">
             <span>📍 ${escapeHtml(roomLabel)}</span>
@@ -2149,6 +2446,9 @@ function renderMobileRosterList(state = currentGameState) {
     const phoneBadge = p.hasPhone
       ? '<span style="font-size: 0.68rem; color: #7dd3fc; background: rgba(56, 189, 248, 0.15); padding: 2px 5px; border-radius: 4px;">📱 Tél</span>'
       : '<span style="font-size: 0.68rem; color: var(--gold-light); background: rgba(245, 158, 11, 0.15); padding: 2px 5px; border-radius: 4px;">🕯️ Manuel</span>';
+    const monsterBadge = p.isMonster
+      ? '<span style="font-size: 0.68rem; color: #fff; background: linear-gradient(135deg, #dc2626, #991b1b); border: 1.5px solid #f87171; padding: 2px 6px; border-radius: 5px; font-weight: 800; display: inline-flex; align-items: center; gap: 3px; box-shadow: 0 0 8px rgba(220, 38, 38, 0.6);">🐺 ✓ Monstre</span>'
+      : '';
 
     item.innerHTML = `
       <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
@@ -2157,6 +2457,7 @@ function renderMobileRosterList(state = currentGameState) {
           <div style="display: flex; align-items: center; gap: 6px;">
             <strong style="color: #fff; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(p.name)}</strong>
             ${phoneBadge}
+            ${monsterBadge}
           </div>
           <div style="font-size: 0.74rem; color: var(--text-muted); display: flex; gap: 8px; margin-top: 2px;">
             <span>📍 ${escapeHtml(roomLabel)}</span>

@@ -546,9 +546,24 @@ function renderTvView(state) {
   const canSeeRoomsOnTv = isRevealed || (isNightAsleep && state.tvMapVisible);
 
   // 1. En-tête, compteurs et palmarès
+  const maxN = state.maxNights || 5;
+  const mCount = state.monstersCount || 3;
+
   if (tvNightBadge) {
-    tvNightBadge.textContent = `🌙 Nuit ${state.currentNight || 1} / ${state.maxNights || 5}`;
+    tvNightBadge.textContent = `🌙 Nuit ${state.currentNight || 1} / ${maxN}`;
   }
+
+  // Objectifs dynamiques dans les règles TV
+  const tvRuleMaxNights = document.getElementById('tv-rule-max-nights');
+  const tvRuleMaxNights2 = document.getElementById('tv-rule-max-nights-2');
+  const tvRuleMonsters = document.getElementById('tv-rule-monsters-count');
+  const tvRuleFinalNight = document.getElementById('tv-rule-final-night-label');
+
+  if (tvRuleMaxNights) tvRuleMaxNights.textContent = `${maxN} Nuits`;
+  if (tvRuleMaxNights2) tvRuleMaxNights2.textContent = `${maxN} nuits`;
+  if (tvRuleMonsters) tvRuleMonsters.textContent = `${mCount} Monstre${mCount > 1 ? 's' : ''}`;
+  if (tvRuleFinalNight) tvRuleFinalNight.textContent = `${maxN}ème nuit`;
+
   badgeAliveCount.textContent = `${state.aliveCount} Survivant${state.aliveCount > 1 ? 's' : ''}`;
   badgeDeadCount.textContent = `${state.deadCount} Éliminé${state.deadCount > 1 ? 's' : ''} 💀`;
 
@@ -652,9 +667,21 @@ function renderTvView(state) {
 
     if (canSeeRoomsOnTv) {
       const occupants = state.players.filter(p => p.room === roomId && p.isAlive);
-      countEl.textContent = occupants.length;
+      const count = occupants.length;
+      countEl.textContent = count;
+
+      let density = 'normal';
+      if (count >= 7) density = 'packed';
+      else if (count >= 5) density = 'crowded';
+      else if (count >= 3) density = 'compact';
+
+      occupantsEl.setAttribute('data-density', density);
+      occupantsEl.setAttribute('data-count', count);
+
       if (boxEl) {
-        boxEl.classList.toggle('occupied', occupants.length > 0 && !isDestroyed);
+        boxEl.classList.toggle('occupied', count > 0 && !isDestroyed);
+        boxEl.setAttribute('data-occupants-count', count);
+        boxEl.setAttribute('data-density', density);
       }
 
       if (occupants.length === 0) {
@@ -722,6 +749,8 @@ function renderTvView(state) {
         pyromane: 'Pyromane',
         monsters: 'Monstres',
         vote: 'Vote',
+        sorciere: 'Sorcière',
+        chasseur: 'Chasseur',
         manual: 'Ombres'
       };
       const reasonTxt = reasonNames[player.eliminatedReason] || 'Éliminé';
@@ -747,18 +776,20 @@ function createTvPlayerChip(player, isUnassigned = false) {
   if (isCountdown) {
     if (player.isLocked) {
       chip.classList.add('is-locked');
-      lockBadge = '<span style="font-size: 0.65rem; color: #a7f3d0; background: rgba(6,78,59,0.7); border: 1px solid #10b981; padding: 1px 5px; border-radius: 6px; font-weight: 700; margin-left: auto;">🔒 Prêt</span>';
+      lockBadge = '<span class="chip-status-badge is-locked" title="Prêt" style="font-size: 0.65rem; color: #a7f3d0; background: rgba(6,78,59,0.7); border: 1px solid #10b981; padding: 1px 4px; border-radius: 6px; font-weight: 700; margin-left: auto;">🔒</span>';
     } else {
       chip.classList.add('is-thinking');
-      lockBadge = '<span style="font-size: 0.65rem; color: #fde047; background: rgba(120,53,15,0.6); border: 1px solid rgba(245,158,11,0.5); padding: 1px 5px; border-radius: 6px; margin-left: auto;">⏳</span>';
+      lockBadge = '<span class="chip-status-badge is-thinking" title="En train de choisir..." style="font-size: 0.65rem; color: #fde047; background: rgba(120,53,15,0.6); border: 1px solid rgba(245,158,11,0.5); padding: 1px 4px; border-radius: 6px; margin-left: auto;">⏳</span>';
     }
   }
 
+  const phoneBadge = !player.hasPhone ? '<span class="chip-phone-badge" title="Sans téléphone" style="font-size: 0.62rem; color: var(--gold-light); background: rgba(0,0,0,0.5); padding: 1px 3px; border-radius: 5px; margin-left: 2px;">📵</span>' : '';
+
   chip.innerHTML = `
-    <span style="font-size: 1.2rem;">${player.avatar}</span>
-    <span style="font-size: 0.95rem; font-weight: 700; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(player.name)}</span>
+    <span class="chip-avatar">${player.avatar}</span>
+    <span class="chip-name">${escapeHtml(player.name)}</span>
     ${lockBadge}
-    ${!player.hasPhone ? '<span style="font-size: 0.65rem; color: var(--gold-light); background: rgba(0,0,0,0.5); padding: 1px 4px; border-radius: 6px; margin-left: 6px;">Sans tél</span>' : ''}
+    ${phoneBadge}
   `;
 
   if (isUnassigned) {
@@ -774,8 +805,6 @@ function createTvPlayerChip(player, isUnassigned = false) {
     chip.style.background = 'rgba(43, 31, 64, 0.95)';
     chip.style.borderColor = 'var(--gold)';
     chip.style.boxShadow = '0 0 10px rgba(245, 158, 11, 0.3)';
-    chip.style.padding = '2px 8px';
-    chip.style.fontSize = '0.8rem';
   }
 
   return chip;
